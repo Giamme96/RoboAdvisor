@@ -20,7 +20,7 @@ import Metodi_calcolo as CALC
 
 
 
-class CONSULENTECTRL():
+class QUESTIONARIOCTRL():
 
     questionario = 0
 
@@ -50,21 +50,17 @@ class CONSULENTECTRL():
         self.frame_radio = ttk.LabelFrame(self.questionario, text = "Compila il questionario con i radio buttons per la profilazione")
         self.frame_radio.grid(column = 0, row = 1, sticky = "nswe")
 
-        self.invia_questionario = ttk.Button(self.questionario, text = "Invia", command = CallBackQuestionario)    #TODO da fare la callback e invio dati 
+        self.invia_questionario = ttk.Button(self.questionario, text = "Invia")    #TODO da fare la callback e invio dati 
         self.invia_questionario.grid(column = 0, row = 2, sticky = "nswe")
 
-        self.CreaQuestionario(self.frame_questionario, self.lista_domande_questionario)
+        self.CreaQuestionario(self.frame_questionario)
 
-        self.CreaRadio3Risposte(self.frame_radio, self.lista_domande_questionario_checkbox)
-
-
-
-
+        self.CreaRadio3Risposte(self.frame_radio)
 
     def CreaLabel(self, master, testo,  r, c):
 
         label = ttk.Label(master, text = testo)
-        label.grid(column = r, row = c, sticky = "nswe")
+        label.grid(column = c, row = r, sticky = "nswe")
     
     def CreaEntryWidget(self, master, r, c):      
 
@@ -72,38 +68,43 @@ class CONSULENTECTRL():
         insert_data = tk.Entry(master)
         insert_data.grid(column = c, row = r)    
         
-    def CreaRadio(self, master, lista_radio_3):   #crea tutti i radio nella lista passata [[domanda, 1, 2, 3]....]
+    def CreaRadio(self, master, domanda_corrente, r):   #crea tutti i radio nella lista passata [[domanda, 1, 2, 3]....]
 
-        risposta = tk.StringVar()
-        index = 0
+        risposta = tk.StringVar() 
+      
         index_risposte = 1
-        
-        for i in lista_radio_3:
+        first = True
+        for i in domanda_corrente:
 
-                radio = tk.Radiobutton(master, text = i[index_risposte], variable = risposta, value = i[index_risposte])
-                radio.select()                          #TODO da controllare che serva a qualcosa
-                radio.grid(column = index, row = 0, sticky = "nswe")
+            if first:   #skip primo elemento
+                
+                first = False
+                continue 
+            
+            radio = tk.Radiobutton(master, text = i, variable = risposta, value = index_risposte)
+            radio.select()                          #TODO da controllare che serva a qualcosa
+            radio.grid(column = index_risposte, row = r, sticky = "nswe")
+            
+            index_risposte += 1
 
-                index = index + 1
-                index_risposte = index_risposte + 1
-
-    def CreaQuestionario(self, frame_master, lista_domande):    #Crea un questinario a domande aperte da una lista passata
+    def CreaQuestionario(self, frame_master):    #Crea un questinario a domande aperte da una lista passata
 
         index = 0
-        for i in lista_domande: #creazione domande aperte con entry
+        for i in self.lista_domande_questionario: #creazione domande aperte con entry
             
-            
-            self.CreaLabel(frame_master, i[0],  index, 0)
+            self.CreaLabel(frame_master, i,  index, 0)
             self.CreaEntryWidget(frame_master, index, 1)
 
-            index = index + 1
+            index += 1
 
-    def CreaRadio3Risposte(self, frame_master, lista_radio_3):     #Crea un questionario radio da una lista passata
+    def CreaRadio3Risposte(self, frame_master):     #Crea un questionario radio da una lista passata
 
-        for i in range(len(lista_radio_3)):
+        index = 0
+        for i in self.lista_domande_questionario_checkbox:
             
-            self.CreaLabel(frame_master, lista_radio_3[i][0], i, 0)
-            self.CreaRadio(frame_master, lista_radio_3)
+            self.CreaLabel(frame_master, i[0], index, 0)
+            self.CreaRadio(frame_master, i, index)
 
+            index += 1
 
 

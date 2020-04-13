@@ -4,6 +4,7 @@ import globalita as GLOBE
 import API_call as CALLAPI
 import Panoramica_ctrl as PANCTRL
 import Modificaport_ctrl as MODCTRL
+import Questionario_ctrl as QUESTCTRL
 import Tabella as TAB
 
 class VIEWMANAGER():
@@ -19,6 +20,7 @@ class VIEWMANAGER():
 
     panctrl = 0
     modctrl = 0
+    questctrl = 0
     
     def __init__(self):
         self.win = tk.Tk()
@@ -48,6 +50,8 @@ class VIEWMANAGER():
         self.panctrl = PANCTRL.PANORAMICACTRL(self.panoramica)
 
         self.modctrl = MODCTRL.MODIFICAPORTCTRL(self.modificaport)
+
+        self.questctrl = QUESTCTRL.QUESTIONARIOCTRL(self.questionario)
 
         self.tabControl.bind("<<NotebookTabChanged>>", self.CambioTab)
         

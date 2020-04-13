@@ -29,4 +29,3 @@ df = CALLAPI.BEESCALLER().AdjApiCallPortafoglio("aapl")
 
 
 print(CALC.DeltaChange(df, "Close"))
-print("hello word")
