@@ -1,0 +1,12 @@
+
+'2020-03-23': {'1. open': '228.0800', '2. high': '228.4997', '3. low': '213.0100', '4. close': '213.6500', '5. volume': '31669979'}, 
+'2020-03-20': {'1. open': '247.1800', '2. high': '251.8300', '3. low': '228.0000', '4. close': '229.2400', '5. volume': '100423346'},
+'2020-03-19': {'1. open': '247.3850', '2. high': '252.8400', '3. low': '242.6100', '4. close': '244.7800', '5. volume': '67964255'}
+
+
+
+'2020-03-23': {'1. open': '228.0800', '2. high': '228.4997', '3. low': '212.6100', '4. close': '222.6250', '5. adjusted close': '222.6250', '6. volume': '44612586', '7. dividend amount': '0.0000', '8. split coefficient': '1.0000'}, 
+'2020-03-20': {'1. open': '247.1800', '2. high': '251.8300', '3. low': '228.0000', '4. close': '229.2400', '5. adjusted close': '229.2400', '6. volume': '100423346', '7. dividend amount': '0.0000', '8. split coefficient': '1.0000'},
+'2020-03-19': {'1. open': '247.3850', '2. high': '252.8400', '3. low': '242.6100', '4. close': '244.7800', '5. adjusted close': '244.7800', '6. volume': '67964255', '7. dividend amount': '0.0000', '8. split coefficient': '1.0000'}, 
+ 
+{'1. Information': 'Daily Time Series with Splits and Dividend Events', '2. Symbol': 'AAPL', '3. Last Refreshed': '2020-03-23 12:48:58', '4. Output Size': 'Compact', '5. Time Zone': 'US/Eastern'}
