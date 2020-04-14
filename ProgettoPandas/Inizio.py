@@ -12,7 +12,6 @@ import View_manager as MANAGER
 
 import globalita as GLOBE
 import API_call as CALLAPI
-import InterpreterAPI as INTPR
 import Lavoro_file as FILE
 
 

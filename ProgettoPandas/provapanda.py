@@ -25,7 +25,12 @@ import globalita as GLOBE
 
 
 
-df = CALLAPI.BEESCALLER().AdjApiCallPortafoglio("aapl")
 
+# res = inv.stocks.get_stocks_overview("united states", as_json=False, n_results=50)
+# print(res)
 
-print(CALC.DeltaChange(df, "Close"))
+# isin = inv.stocks.search_stocks("country", "italy")
+# print(isin)
+
+info = inv.stocks.get_stock_information("aapl", "united states", as_json=False)
+print(info["Beta"])

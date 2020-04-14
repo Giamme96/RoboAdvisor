@@ -1,9 +1,11 @@
 
 import numpy as np
 import statsmodels.api as sm
+import investpy as inv
 
 import globalita as GLOBE
 import API_call as CALLAPI
+
 
 
 
@@ -190,4 +192,9 @@ def GetCurrency(array):   #restituisce la curency dell'datafetch inserito
 
     return currency
 
+def MovingAvgCerca(symbol, periodo_dati):   #country e tipo bloccati
+    
 
+    mav = inv.moving_averages(name = symbol,  country = 'united states', product_type='stock', interval = periodo_dati)
+
+    return mav

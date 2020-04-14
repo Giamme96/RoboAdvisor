@@ -12,7 +12,6 @@ from pandas import DataFrame
 from tkinter import messagebox as msg
 
 import globalita as GLOBE
-import InterpreterAPI as INTPR
 import API_call as CALLAPI
 import Plot_factory as PLOT
 import Metodi_calcolo as CALC
@@ -27,11 +26,15 @@ class MODIFICAPORTCTRL():
     societacerca = 0
     lblrend = 0
     lblstd = 0
+    label_mav = 0
 
     testolabelrend = "Il rendimento medio del titolo è: "
     testolabelstd = "La dev. std è: "
+    testolabelmav = "La media mobile del titolo è: "
+
     valuelabelrend = ""
     valuelabelstd = ""
+    valuelabelmav = ""
 
     periodo_sel = 0
     data_sel = 0
@@ -91,6 +94,20 @@ class MODIFICAPORTCTRL():
         self.valuelabelstd.set(self.testolabelstd + "0")
         self.lblstd = ttk.Label(frame_cerca, textvariable = self.valuelabelstd)
         self.lblstd.grid(column = 0, row = 3)
+
+        #Creazione sub_frame destra collegato a cerca:::::::::::::::::::::::::::::::::SUB-CERCA
+
+        frame_cerca_tech = ttk.LabelFrame(self.modificaport, text = 'Strumenti timing')
+        frame_cerca_tech.grid(column = 1, row = 0, sticky = "nwe")
+
+        self.valuelabelmav = tk.StringVar()
+        self.valuelabelmav.set(self.testolabelmav + "0")
+        self.label_mav = ttk.Label(frame_cerca_tech, textvariable = self.valuelabelmav)
+        self.label_mav.grid(column = 0, row = 0, sticky = "nwe")
+
+
+
+        #Creazione sub_frame destra collegato a cerca:::::::::::::::::::::::::::::::::SUB-CERCA^^^
 
         #Creazione labelframe modulo cerca ---------------------------------------------------------------------------------CERCA^^^
 
@@ -230,3 +247,5 @@ class MODIFICAPORTCTRL():
         
         PLOT.PLOTFACTORY().SubPlotLineeBarre(symbol, df, 'Close', 10, 5, 5)
 
+        
+        self.valuelabelmav.set(self.testolabelmav + str(CALC.MovingAvgCerca(GLOBE.lista_NASDAQ.get(self.societa_cerca.get()), self.periodo_sel.get())))
