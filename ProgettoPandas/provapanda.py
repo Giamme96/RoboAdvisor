@@ -32,5 +32,8 @@ import globalita as GLOBE
 # isin = inv.stocks.search_stocks("country", "italy")
 # print(isin)
 
-info = inv.stocks.get_stock_information("aapl", "united states", as_json=False)
-print(info["Beta"])
+# info = inv.stocks.get_stock_information("aapl", "united states", as_json=False)
+# print(info["Beta"])
+
+info = CALLAPI.BEESCALLER().ApiCallInfoStock("aapl")
+print(info)

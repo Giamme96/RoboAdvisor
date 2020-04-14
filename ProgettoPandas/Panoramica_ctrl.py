@@ -50,5 +50,6 @@ class PANORAMICACTRL():
         label_rischio = ttk.Label(frame_portafoglio, text = f"Il rischio di portafoglio è: {CALC.CalcolaDevStdPortafoglio()}")
         label_rischio.grid(column = 0, row = 2, sticky = "nswe")
 
-        # label_avg = ttk.Label(frame_portafoglio, text = f"Moving AVG: {CALC.MovingAvg()}")
-        # label_avg.grid(column = 0, row = 3, sticky = "nswe")
+        label_beta = ttk.Label(frame_portafoglio, text = f"Il beta di portafoglio è: {CALC.BetaPortafoglio()}")
+        label_beta.grid(column = 0, row = 3, sticky = "nswe")
+

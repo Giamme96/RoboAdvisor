@@ -193,8 +193,10 @@ class MODIFICAPORTCTRL():
             
             if self.quantity_agg.get() > 0:     #controllo quantità inserita maggiore di 0
 
-                dfp = CALLAPI.BEESCALLER().AdjApiCallPortafoglio(symbol) 
-                GLOBE.AggiungiSocieta(self.societa.get(), self.quantity_agg.get(), self.position_agg.get(), datetime.now(), dfp["Close"].iloc[len(dfp) - 1], dfp)
+                dfp = CALLAPI.BEESCALLER().AdjApiCallPortafoglio(symbol)
+                df_info = CALLAPI.BEESCALLER().ApiCallInfoStock(symbol)
+
+                GLOBE.AggiungiSocieta(self.societa.get(), self.quantity_agg.get(), self.position_agg.get(), datetime.now(), dfp["Close"].iloc[len(dfp) - 1], dfp, df_info)
                 self.combosocieta_modifica['values'] = GLOBE.CheckListaModPortafoglio()
 
                 FILE.ScritturaPortFile()

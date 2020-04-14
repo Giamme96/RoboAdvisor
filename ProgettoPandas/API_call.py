@@ -46,23 +46,32 @@ class BEESCALLER():
         print(f"Call API portafoglio {symbol}")
 
         return dfp
+    
+    def ApiCallInfoStock(self, symbol): #restituisce le info della società in formato dict
+
+        info_stock = inv.stocks.get_stock_information(stock = symbol, country = "united states")
+
+        return info_stock
         
     def ChiamataApiPortafoglioPanoramica(self): 
 
-        index_call = self.ApiIndexCallPortafoglio("nasdaq")  #chiamata all'indice per il calcolo del Beta
+        # index_call = self.ApiIndexCallPortafoglio("nasdaq")  #chiamata all'indice per il calcolo del Beta
         
         for i in list(GLOBE.societa.keys()):
 
-            if GLOBE.societa.get(i).get("daily_adj") == -1:
+            if GLOBE.societa.get(i).get("daily_adj") == -1 and GLOBE.societa.get(i).get("df_info") == -1:
 
                 datafetch = BEESCALLER().AdjApiCallPortafoglio(i)
-
+                datafetch_info = BEESCALLER().ApiCallInfoStock(i)  #tipo dict
+ 
                 # GLOBE.societa.get(i).get("daily_adj") = datafetch
                 GLOBE.societa.get(i).update(daily_adj = datafetch)
+                GLOBE.societa.get(i).update(df_info = datafetch_info)
                 GLOBE.societa.get(i).update(totale_change = CALC.CalcoloChange(GLOBE.societa.get(i).get("daily_adj"), "Close", GLOBE.societa.get(i).get("price_ordine")))
-                GLOBE.societa.get(i).update(beta = CALC.RegressioneBetaPortafoglio(GLOBE.societa.get(i).get("daily_adj"), index_call))
+                GLOBE.societa.get(i).update(beta = datafetch_info["Beta"].values[0])
+                GLOBE.societa.get(i).update(one_year_change = datafetch_info["1-Year Change"].values[0])
                 GLOBE.societa.get(i).update(currency = CALC.GetCurrency(GLOBE.societa.get(i).get("daily_adj")))
-                print(f"Inserisco {i} perchè non c'erano i dati.")
+                print(f"Inserisco {i} nel dict societa.")
 
     def ApiIndexCallPortafoglio(self, index_symbol):      #TODO da implementare nel caso vengano scelti per il portafoglio titoli diversi dal paniere nasdaq per fare la regressione
                                                             #restituisce il datafetch raw

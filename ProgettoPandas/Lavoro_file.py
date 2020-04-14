@@ -38,4 +38,4 @@ def LetturaPortFile():
                 
         for i in data:
         
-            GLOBE.AggiungiSocieta(data.get(i).get("nome"), data.get(i).get("quantity"), data.get(i).get("position"), datetime.strptime(data.get(i).get("data_ordine"), '%Y-%m-%d %H:%M:%S.%f'), data.get(i).get("price_ordine"), -1)
+            GLOBE.AggiungiSocieta(data.get(i).get("nome"), data.get(i).get("quantity"), data.get(i).get("position"), datetime.strptime(data.get(i).get("data_ordine"), '%Y-%m-%d %H:%M:%S.%f'), data.get(i).get("price_ordine"), -1, -1)

@@ -8,7 +8,6 @@ import API_call as CALLAPI
 
 
 
-
 def DeltaChange(array, column_type):    #calcola i change moltiplicati * 100
 
     colonna = array[column_type]
@@ -87,7 +86,6 @@ def CreaMatriceCov():      #array di tipo lista, portafoglio[aapl, aal, msft, ec
         lista_portafoglio_return = DeltaChange(i.get("daily_adj"), "Close")
         lista_portafoglio_dropped.append(lista_portafoglio_return)
 
-
     matrice_cov = np.cov(lista_portafoglio_dropped)
     # print("La matrice covarianza del portafoglio: ", matrice_cov)
     # print("shape matrice: ", np.shape(matrice_cov))
@@ -112,13 +110,11 @@ def VettorePesi():
         peso_societa = GLOBE.societa.get(key_societa[i]).get("totale_ordine") / totale_investimento
         vettore_pesi.append(peso_societa)
 
-
     # print("Il vettore pesi è: ", vettore_pesi)
 
     return vettore_pesi
 
 def MatriceProdotto(matriceA, matriceB):
-
 
     matrice_prodotto = np.dot(matriceA, matriceB)
     # print("Matrice prodotto: ", matrice_prodotto)
@@ -134,7 +130,7 @@ def CalcolaDevStdPortafoglio():
     
     matrice_cov = CreaMatriceCov()
 
-    vettore_pesi = np.array([VettorePesi()])
+    vettore_pesi = np.array(VettorePesi())
 
     var_portafoglio = MatriceProdotto(vettore_pesi, MatriceProdotto(matrice_cov, TrasponiMatrice(vettore_pesi)))
 
@@ -146,7 +142,7 @@ def CalcolaDevStdPortafoglio():
 
 def RendimentoAttesoPortafoglio():
 
-    pesi = np.array([VettorePesi()])
+    pesi = np.array(VettorePesi())
 
     lista_portafoglio_return_avg = []
     for i in GLOBE.societa.values():
@@ -154,10 +150,23 @@ def RendimentoAttesoPortafoglio():
         lista_portafoglio_return = DeltaChangeAvg(i.get("daily_adj"), "Close")
         lista_portafoglio_return_avg.append(lista_portafoglio_return)
 
-    rendimento_atteso = MatriceProdotto(pesi, TrasponiMatrice(np.array([lista_portafoglio_return_avg])))
+    rendimento_atteso = MatriceProdotto(pesi, TrasponiMatrice(np.array(lista_portafoglio_return_avg)))
     # print("Il rendimento atteso è:", rendimento_atteso)
 
     return rendimento_atteso
+
+def BetaPortafoglio():
+
+    pesi = np.array(VettorePesi())
+
+    lista_portafoglio_beta = []
+    for i in GLOBE.societa.values():
+        
+        lista_portafoglio_beta.append(i.get("beta"))
+
+    beta_portafoglio = MatriceProdotto(pesi, TrasponiMatrice(np.array(lista_portafoglio_beta)))
+
+    return beta_portafoglio
 
 def RegressioneBetaPortafoglio(y_titolo_datafetch, x_index_datafetch):  #inserire i datafetch raw
 
@@ -181,7 +190,6 @@ def RegressioneBetaPortafoglio(y_titolo_datafetch, x_index_datafetch):  #inserir
 
     return coeff[1] #ritorna il beta
 
-
 def GetCurrency(array):   #restituisce la curency dell'datafetch inserito
 
     if isinstance(array, int):    
@@ -191,6 +199,16 @@ def GetCurrency(array):   #restituisce la curency dell'datafetch inserito
     currency = array["Currency"].iloc[0]
 
     return currency
+
+def GetFromDfToSocieta(array, column):   #restituisce la colonna derivante dal datfetch
+
+    if isinstance(array, int):    
+    
+        return 0
+
+    column_ret = array[column]
+
+    return column_ret
 
 def MovingAvgCerca(symbol, periodo_dati):   #country e tipo bloccati
     
