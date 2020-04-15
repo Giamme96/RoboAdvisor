@@ -3,10 +3,17 @@ import json
 import tkinter as tk
 import Metodi_calcolo as CALC
 import API_call as CALLAPI
+import Lavoro_file as FILE
 
 societa = {}    
 
 lista_NASDAQ = {}
+
+country_isin = {            #da completare con tutti i riferimenti
+        "US" : "united states",
+        "IT" : "italy",
+        "GB" : "great britain"
+        }
 
 def CaricaNASDAQ():
 
@@ -20,6 +27,8 @@ def CaricaNASDAQ():
 def AggiungiSocieta(nome, quantita, position, date, price, datafetch, datafetch_info):
 
     symbol = lista_NASDAQ.get(nome)
+    
+    # FILE.LetturaProfilazione()
 
     NewCo = {
         "nome" : nome,
@@ -50,8 +59,6 @@ def CheckListaModPortafoglio():
         array_societa.append(item.get("nome"))  #aggiunge un nuovo elemento item all'array
         
     return array_societa
-
-
 
 
 

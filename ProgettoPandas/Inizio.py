@@ -32,5 +32,7 @@ viewmanager.win.mainloop()
 
 
 #TODO aggiornamento dei risultati portafoglio rend dev ecc con cambio tab
-#TODO da sistemare i dropna() nel calcolo change
+#TODO da sistemare modifica togliere short e long
+#TODO da sistemare le funzioni api per integrare l'isin
+#TODO da guardare le callback di modifica/agg e togliere i riferimenti a lista nasdaq
 

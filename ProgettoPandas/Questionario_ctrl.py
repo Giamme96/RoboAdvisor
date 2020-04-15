@@ -56,9 +56,9 @@ class QUESTIONARIOCTRL():
         self.CreaQuestionario(self.frame_questionario)
 
         self.CreaRadio3Risposte(self.frame_radio)
-
+        
     def CreaLabel(self, master, testo,  r, c):
-
+        
         label = ttk.Label(master, text = testo)
         label.grid(column = c, row = r, sticky = "nswe")
     
@@ -106,5 +106,6 @@ class QUESTIONARIOCTRL():
             self.CreaRadio(frame_master, i, index)
 
             index += 1
+    
 
-
+        

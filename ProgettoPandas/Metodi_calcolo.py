@@ -216,3 +216,12 @@ def MovingAvgCerca(symbol, periodo_dati):   #country e tipo bloccati
     mav = inv.moving_averages(name = symbol,  country = 'united states', product_type='stock', interval = periodo_dati)
 
     return mav
+
+def GetCountryByIsin(isin): #restituisce il paese di corrispondenza all'isin inserito
+
+    country_iniziali = isin[:2]
+    country = GLOBE.country_isin.get(country_iniziali)
+
+    print(country)
+
+    return country

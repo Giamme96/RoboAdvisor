@@ -39,3 +39,29 @@ def LetturaPortFile():
         for i in data:
         
             GLOBE.AggiungiSocieta(data.get(i).get("nome"), data.get(i).get("quantity"), data.get(i).get("position"), datetime.strptime(data.get(i).get("data_ordine"), '%Y-%m-%d %H:%M:%S.%f'), data.get(i).get("price_ordine"), -1, -1)
+
+def ScritturaProfilazione():    #la posizione dell'utente investitore
+
+    json_profilazione = {
+
+        "classificazione_rischio" : "speculazione"  #speculazione, risparmio, crescita capitale
+
+    }
+
+    with open("Profilazione.json", "w") as outfile:
+
+        json.dump(json_profilazione, outfile)
+
+def LetturaProfilazione():  #da utilizzare la profilazione dell'investitore per permettere alcuni investimenti
+
+    with open("Profilazione.json") as json_file:
+
+        data_lettura = json.load(json_file)
+
+
+    return data_lettura
+
+
+
+
+    

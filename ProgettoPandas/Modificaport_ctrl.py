@@ -24,6 +24,7 @@ class MODIFICAPORTCTRL():
 
     #reference a frame CERCA
     societacerca = 0
+    isin_inserimento = 0
     lblrend = 0
     lblstd = 0
     label_mav = 0
@@ -59,30 +60,35 @@ class MODIFICAPORTCTRL():
         #Creazione labelframe modulo cerca ---------------------------------------------------------------------------------CERCA
         frame_cerca = ttk.LabelFrame(self.modificaport, text = 'Overview titolo')
         frame_cerca.grid(column = 0, row = 0, sticky = "w")
-        
 
-        #Creazione menu a tendina elenco società
+        #adding a Textbox entry per l'ISIN
+        self.isin_inserimento = tk.StringVar() 
+        insert_isin_cerca = ttk.Entry(frame_cerca, textvariable = self.isin_inserimento) 
+        insert_isin_cerca.grid(column = 0, row = 0)
+        
+        #Creazione menu a tendina elenco società        #dasostituire nome variabili
         self.societa_cerca = tk.StringVar()
-        combosocieta_cerca = ttk.Combobox(frame_cerca, state = 'readonly', textvariable = self.societa_cerca)
-        combosocieta_cerca['values'] = list(GLOBE.lista_NASDAQ.keys())
-        combosocieta_cerca.grid(column = 0, row = 0, sticky = "w")
+        strumenti_selezionabili = ['Stock', 'ETF']
+        combosocieta_cerca = ttk.Combobox(frame_cerca, state = 'readonly', values = strumenti_selezionabili, textvariable = self.societa_cerca)
+        # combosocieta_cerca['values'] = list(GLOBE.lista_NASDAQ.keys())
+        combosocieta_cerca.grid(column = 1, row = 0, sticky = "w")
         combosocieta_cerca.current(0)
 
         #Creazione menu a tendina elenco periodizzazione dati   DA GUARDARE
         self.periodo_sel = tk.StringVar()
         periodi = ['Daily', 'Weekly', 'Monthly']
         combodata = ttk.Combobox(frame_cerca, state = 'readonly', values = periodi , textvariable = self.periodo_sel)
-        combodata.grid(column = 1, row = 0)
+        combodata.grid(column = 2, row = 0)
         combodata.current(0)        
 
         #creazione entry widget per l'inserimento della data
         self.data_sel = tk.StringVar()
         self.insert_data = tk.Entry(frame_cerca)
-        self.insert_data.grid(column = 2, row = 0)
+        self.insert_data.grid(column = 3, row = 0)
         
         #adding a button CERCA
         query_cerca = ttk.Button(frame_cerca, text = "Cerca", command = self.CallBackCerca)     
-        query_cerca.grid(column = 3, row = 0)
+        query_cerca.grid(column = 4, row = 0)
 
         #display rendimento e std aggiornato ogni callbackcerca
         self.valuelabelrend = tk.StringVar()
@@ -116,19 +122,25 @@ class MODIFICAPORTCTRL():
         frame_aggiungi = ttk.LabelFrame(self.modificaport, text = 'Aggiungi titolo')
         frame_aggiungi.grid(column = 0, row = 1, sticky = "W")
 
+        #adding a Textbox entry per l'ISIN
+        self.isin_inserimento_aggiungi = tk.StringVar() 
+        insert_isin_aggiungi = ttk.Entry(frame_aggiungi, textvariable = self.isin_inserimento_aggiungi) 
+        insert_isin_aggiungi.grid(column = 0, row = 0)
+        
         #Creazione menu a tendina titoli
        
         self.societa = tk.StringVar()
-        combosocieta = ttk.Combobox(frame_aggiungi, state = 'readonly', textvariable = self.societa)
-        combosocieta['values'] = list(GLOBE.lista_NASDAQ.keys())
-        combosocieta.grid(column = 0, row = 0)
+        strumenti_selezionabili_aggiungi = ['Stock', 'ETF']
+        combosocieta = ttk.Combobox(frame_aggiungi, state = 'readonly', values = strumenti_selezionabili_aggiungi textvariable = self.societa)
+        # combosocieta['values'] = list(GLOBE.lista_NASDAQ.keys())
+        combosocieta.grid(column = 1, row = 0)
         combosocieta.current(0)
 
         #adding a Textbox entry per le quantità
         self.quantity_agg = tk.IntVar() # il totale dovrà essere minore del cash disponibile *da vedere*
 
         insertqt_agg = ttk.Entry(frame_aggiungi, textvariable = self.quantity_agg) # la quantità deve essere un intero e non inferiore a 0
-        insertqt_agg.grid(column = 1, row = 0)
+        insertqt_agg.grid(column = 2, row = 0)
 
         #Creating radio buttons (SHORT-LONG)
         self.position_agg = tk.IntVar()
@@ -233,21 +245,21 @@ class MODIFICAPORTCTRL():
 
     def CallBackCerca(self):
 
-        print("CallbackCerca.....", GLOBE.lista_NASDAQ.get(self.societa_cerca.get()))
+        # print("CallbackCerca.....", GLOBE.lista_NASDAQ.get(self.societa_cerca.get()))
         
         periodo_dati = self.periodo_sel.get()
 
         data_dati = self.insert_data.get()
 
-        symbol = GLOBE.lista_NASDAQ.get(self.societa_cerca.get())    #restituisce il simbolo associato al nome inviato a Lista_NASDQ
+        tipo_strumento = self.societa_cerca.get()    #restituisce il simbolo associato al nome inviato a Lista_NASDQ
 
+        isin = self.isin_inserimento.get()
 
-        df = CALLAPI.BEESCALLER().AdjApiCall(symbol, periodo_dati, data_dati)      
+        df = CALLAPI.BEESCALLER().ApiCallByIsin(isin, periodo_dati, data_dati, tipo_strumento)
 
         self.valuelabelrend.set(self.testolabelrend + str(CALC.DeltaChangeAvg(df, 'Close')))
         self.valuelabelstd.set(self.testolabelstd + str(CALC.DeltaChangeStd(df, 'Close')))
         
-        PLOT.PLOTFACTORY().SubPlotLineeBarre(symbol, df, 'Close', 10, 5, 5)
+        PLOT.PLOTFACTORY().SubPlotLineeBarre(isin, df, 'Close', 10, 5, 5)
 
-        
         self.valuelabelmav.set(self.testolabelmav + str(CALC.MovingAvgCerca(GLOBE.lista_NASDAQ.get(self.societa_cerca.get()), self.periodo_sel.get())))

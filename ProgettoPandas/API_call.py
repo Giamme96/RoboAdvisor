@@ -22,6 +22,12 @@ class BEESCALLER():
         "Monthly" : "Monthly"
     }
 
+    # mappa_strumenti = {
+    #     "Stock" : ApiCallFromDictStock(),
+    #     "ETF" : "Weekly",
+    #     "Funds" : "Monthly"
+    # }
+
     def AdjApiCall(self, symbol, periodicita, start):        #start convertibile in data
 
         # start = datetime(sy, sm, sd)
@@ -31,6 +37,36 @@ class BEESCALLER():
 
         # df = web.DataReader(symbol, self.mappa_periodicita[periodicita], start, end, api_key = self.key)
         df = inv.get_stock_historical_data(stock = symbol, country = "united states", from_date = start, to_date = endeu, as_json=False, order='ascending', interval = self.mappa_periodicita[periodicita])
+        return df
+
+    def ApiCallByIsin(self, isin, periodicita, start, tipologia_strumento):        
+
+        # start = datetime(sy, sm, sd)
+        endus = datetime.now()
+        endeu = endus.strftime("%d/%m/%Y")
+        country = CALC.GetCountryByIsin(isin)
+
+        if tipologia_strumento == "Stock":
+
+            stock = inv.stocks.get_stocks(country = country)
+            by_isin_value_to_symbol = stock.loc[stock["isin"] == isin]["symbol"].values[0]
+
+            df = inv.get_stock_historical_data(stock = by_isin_value_to_symbol, country = country, from_date = start, to_date = endeu, as_json=False, order='ascending', interval = self.mappa_periodicita[periodicita])
+        
+        elif tipologia_strumento == "ETF":
+
+            etf = inv.etfs.get_etfs(country = country)
+            by_isin_value_to_symbol = etf.loc[etf["isin"] == isin]["symbol"].values[0]
+
+            df = inv.get_etf_historical_data(etf = by_isin_value_to_symbol, country = country, from_date = start, to_date = endeu, as_json=False, order='ascending', interval = self.mappa_periodicita[periodicita])
+
+        # elif tipologia_strumento == "Fund":
+
+        #     fund = inv.funds.get_funds(country = country)
+        #     by_isin_value_to_symbol = fund.loc[fund["isin"] == isin]["symbol"].values[0]
+
+        #     df = inv.get_fund_historical_data(fund = by_isin_value_to_symbol, country = country, from_date = start, to_date = endeu, as_json=False, order='ascending', interval = self.mappa_periodicita[periodicita])
+        
         return df
 
     def AdjApiCallPortafoglio(self, symbol):        #call all'api da inserire nel portafoglio ultime 60 obs.
@@ -47,7 +83,7 @@ class BEESCALLER():
 
         return dfp
     
-    def ApiCallInfoStock(self, symbol): #restituisce le info della società in formato dict
+    def ApiCallInfoStock(self, symbol): #restituisce le info della società
 
         info_stock = inv.stocks.get_stock_information(stock = symbol, country = "united states")
 
