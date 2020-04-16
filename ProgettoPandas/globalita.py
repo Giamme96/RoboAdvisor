@@ -5,60 +5,63 @@ import Metodi_calcolo as CALC
 import API_call as CALLAPI
 import Lavoro_file as FILE
 
-societa = {}    
-
-lista_NASDAQ = {}
+titolo = {}    
 
 country_isin = {            #da completare con tutti i riferimenti
         "US" : "united states",
         "IT" : "italy",
         "GB" : "great britain"
-        }
+    }
 
-def CaricaNASDAQ():
+mappa_strumenti = {
 
-    with open('ProgettoPandas/NASDAQ.json') as json_file:
+        "Stock" : "stock",
+        "ETF" : "etf",
+        "Fund" : "fund"
+    }
 
-        data = json.load(json_file)
-        for i in data:
-            
-            lista_NASDAQ[i["Company Name"]] = i["Symbol"]
+mappa_periodicita = {
 
-def AggiungiSocieta(nome, quantita, position, date, price, datafetch, datafetch_info):
-
-    symbol = lista_NASDAQ.get(nome)
+        "Daily" : "daily",
+        "Weekly" : "weekly",
+        "Monthly" : "monthly"
+    }
     
-    # FILE.LetturaProfilazione()
+def AggiungiTitolo(isin, nome, symbol, tipologia_strumento, country, quantita, position, date, price, dataframe_dict):
 
-    NewCo = {
-        "nome" : nome,
+    Titolo_dict = {
+
+        "isin" : isin,
+        "nome": nome,
         "symbol" : symbol,
+        "tipo_strumento" : tipologia_strumento,
+        "country" : country,
         "quantity" : quantita,
         "position" : position,
-        "beta" : CALC.GetFromDfToSocieta(datafetch_info, "Beta"),  
+        "beta" : CALC.GetItemFromInfoTech(dataframe_dict, tipologia_strumento, "Beta"),  
         "data_ordine" : date,
         "price_ordine" : price,
         "totale_ordine" : price * quantita,
-        "totale_change" : CALC.CalcoloChange(datafetch, "Close", price),
-        "one_year_change" : CALC.GetFromDfToSocieta(datafetch_info, "1-Year Change"),
-        "currency" : CALC.GetCurrency(datafetch),
-        "daily_adj" : datafetch,     #da tenere per ultimo per la costruzione della tabella
-        "df_info" : datafetch_info
+        "change_dall_acquisto" : CALC.CalcoloChange(dataframe_dict, price),
+        "one_year_change" : CALC.GetItemFromInfoTech(dataframe_dict, tipologia_strumento, "1-Year Change"),
+        "currency" : CALC.GetCurrencyFromInfoGen(dataframe_dict),
+        "dataframe" : dataframe_dict   #da tenere per ultimo per la costruzione della tabella
+        
     }
 
-    global societa 
+    global titolo 
     
-    societa[symbol] = NewCo     
+    titolo[isin] = Titolo_dict     
     
-def CheckListaModPortafoglio():     
+def MenuTitoliPortafoglioModifica():     
 
-    array_societa = []
+    array_titoli = []
     
-    for item in societa.values():
+    for item in titolo.values():
 
-        array_societa.append(item.get("nome"))  #aggiunge un nuovo elemento item all'array
+        array_titoli.append(item.get("nome"))  #aggiunge un nuovo elemento item all'array
         
-    return array_societa
+    return array_titoli
 
 
 

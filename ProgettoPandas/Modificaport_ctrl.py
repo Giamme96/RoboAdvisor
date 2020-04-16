@@ -23,8 +23,8 @@ class MODIFICAPORTCTRL():
     modificaport = 0
 
     #reference a frame CERCA
-    societacerca = 0
-    isin_inserimento = 0
+    titolo_cerca = 0
+    isin_cerca = 0
     lblrend = 0
     lblstd = 0
     label_mav = 0
@@ -37,16 +37,17 @@ class MODIFICAPORTCTRL():
     valuelabelstd = ""
     valuelabelmav = ""
 
-    periodo_sel = 0
+    periodizzazione_cerca = 0
     data_sel = 0
 
     #reference a frame AGGIUNGI
+    isin_agg = 0
     quantity_agg = 0    #input quantità
     position_agg = 0    #input posizione    0 = long 1 = short
-    societa = 0     #input societa
+    titolo_agg = 0     #input societa
     
     #reference a frame MODIFICA
-    societa_modifica = 0
+    titolo_modifica = 0
     position_modifica = 0
     quantity_modifica = 0
     combosocieta_modifica = 0
@@ -62,22 +63,20 @@ class MODIFICAPORTCTRL():
         frame_cerca.grid(column = 0, row = 0, sticky = "w")
 
         #adding a Textbox entry per l'ISIN
-        self.isin_inserimento = tk.StringVar() 
-        insert_isin_cerca = ttk.Entry(frame_cerca, textvariable = self.isin_inserimento) 
+        self.isin_cerca = tk.StringVar() 
+        insert_isin_cerca = ttk.Entry(frame_cerca, textvariable = self.isin_cerca) 
         insert_isin_cerca.grid(column = 0, row = 0)
         
         #Creazione menu a tendina elenco società        #dasostituire nome variabili
-        self.societa_cerca = tk.StringVar()
-        strumenti_selezionabili = ['Stock', 'ETF']
-        combosocieta_cerca = ttk.Combobox(frame_cerca, state = 'readonly', values = strumenti_selezionabili, textvariable = self.societa_cerca)
-        # combosocieta_cerca['values'] = list(GLOBE.lista_NASDAQ.keys())
-        combosocieta_cerca.grid(column = 1, row = 0, sticky = "w")
-        combosocieta_cerca.current(0)
+        self.titolo_cerca = tk.StringVar()
+        combostrumenti_cerca = ttk.Combobox(frame_cerca, state = 'readonly', values = GLOBE.mappa_strumenti.values(), textvariable = self.titolo_cerca)
+        # combotitolo_cerca['values'] = list(GLOBE.lista_NASDAQ.keys())
+        combostrumenti_cerca.grid(column = 1, row = 0, sticky = "w")
+        combostrumenti_cerca.current(0)
 
         #Creazione menu a tendina elenco periodizzazione dati   DA GUARDARE
-        self.periodo_sel = tk.StringVar()
-        periodi = ['Daily', 'Weekly', 'Monthly']
-        combodata = ttk.Combobox(frame_cerca, state = 'readonly', values = periodi , textvariable = self.periodo_sel)
+        self.periodizzazione_cerca = tk.StringVar()
+        combodata = ttk.Combobox(frame_cerca, state = 'readonly', values = GLOBE.mappa_periodicita.values(), textvariable = self.periodizzazione_cerca)
         combodata.grid(column = 2, row = 0)
         combodata.current(0)        
 
@@ -123,22 +122,19 @@ class MODIFICAPORTCTRL():
         frame_aggiungi.grid(column = 0, row = 1, sticky = "W")
 
         #adding a Textbox entry per l'ISIN
-        self.isin_inserimento_aggiungi = tk.StringVar() 
-        insert_isin_aggiungi = ttk.Entry(frame_aggiungi, textvariable = self.isin_inserimento_aggiungi) 
-        insert_isin_aggiungi.grid(column = 0, row = 0)
+        self.isin_agg = tk.StringVar() 
+        insert_isin_agg = ttk.Entry(frame_aggiungi, textvariable = self.isin_agg) 
+        insert_isin_agg.grid(column = 0, row = 0)
         
         #Creazione menu a tendina titoli
-       
-        self.societa = tk.StringVar()
-        strumenti_selezionabili_aggiungi = ['Stock', 'ETF']
-        combosocieta = ttk.Combobox(frame_aggiungi, state = 'readonly', values = strumenti_selezionabili_aggiungi textvariable = self.societa)
+        self.titolo_agg = tk.StringVar()
+        combostrumenti_aggiungi = ttk.Combobox(frame_aggiungi, state = 'readonly', values = GLOBE.mappa_strumenti.values(), textvariable = self.titolo_agg)
         # combosocieta['values'] = list(GLOBE.lista_NASDAQ.keys())
-        combosocieta.grid(column = 1, row = 0)
-        combosocieta.current(0)
+        combostrumenti_aggiungi.grid(column = 1, row = 0)
+        combostrumenti_aggiungi.current(0)
 
         #adding a Textbox entry per le quantità
         self.quantity_agg = tk.IntVar() # il totale dovrà essere minore del cash disponibile *da vedere*
-
         insertqt_agg = ttk.Entry(frame_aggiungi, textvariable = self.quantity_agg) # la quantità deve essere un intero e non inferiore a 0
         insertqt_agg.grid(column = 2, row = 0)
 
@@ -153,7 +149,7 @@ class MODIFICAPORTCTRL():
         check_shortagg.deselect()
         check_shortagg.grid(column = 1, row = 1, sticky = tk.W)
            
-        #adding a button
+        #adding button inserisci
         query_aggiungi = ttk.Button(frame_aggiungi, text = "Inserisci", command = self.CallBackInserisci)
         query_aggiungi.grid(column = 3, row = 0)
 
@@ -165,10 +161,10 @@ class MODIFICAPORTCTRL():
         frame_modifica.grid(column = 0, row = 2, sticky = "W")
 
         #creazione menu a tendina società
-        self.societa_modifica = tk.StringVar()
-        self.combosocieta_modifica = ttk.Combobox(frame_modifica, state = 'readonly', textvariable = self.societa_modifica)
-        self.combosocieta_modifica['values'] = GLOBE.CheckListaModPortafoglio()
-        self.combosocieta_modifica.grid(column = 0, row = 0)
+        self.titolo_modifica = tk.StringVar()
+        self.combotitolo_modifica = ttk.Combobox(frame_modifica, state = 'readonly', textvariable = self.titolo_modifica)
+        self.combotitolo_modifica['values'] = GLOBE.MenuTitoliPortafoglioModifica()
+        self.combotitolo_modifica.grid(column = 0, row = 0)
         # combosocieta_modifica.current()
 
         #Creating radio buttons (SHORT-LONG)
@@ -195,71 +191,79 @@ class MODIFICAPORTCTRL():
     def CallBackInserisci(self):
         
         print("Callbackinserisci .......")
-        print(self.quantity_agg.get())
-        print(GLOBE.lista_NASDAQ.get(self.societa.get()))
-        print(self.position_agg.get())
 
-        symbol = GLOBE.lista_NASDAQ.get(self.societa.get())     #restituisce il simbolo associato al nome inviato a Lista_NASDQ
+        isin = self.isin_agg.get()
 
-        if GLOBE.societa.get(symbol) == None or GLOBE.societa.get("quantity") == 0:
+        tipologia_strumento = self.titolo_agg.get()    
+
+        if GLOBE.titolo.get("isin") == None or GLOBE.titolo.get("quantity") == 0:
             
             if self.quantity_agg.get() > 0:     #controllo quantità inserita maggiore di 0
 
-                dfp = CALLAPI.BEESCALLER().AdjApiCallPortafoglio(symbol)
-                df_info = CALLAPI.BEESCALLER().ApiCallInfoStock(symbol)
+                dfp = CALLAPI.BEESCALLER().ApiGetAllByIsinPortafoglio(isin, tipologia_strumento)
 
-                GLOBE.AggiungiSocieta(self.societa.get(), self.quantity_agg.get(), self.position_agg.get(), datetime.now(), dfp["Close"].iloc[len(dfp) - 1], dfp, df_info)
-                self.combosocieta_modifica['values'] = GLOBE.CheckListaModPortafoglio()
+                GLOBE.AggiungiTitolo(isin, dfp.get("info_gen")["full_name"].values[0], dfp.get("info_gen")["symbol"].values[0], dfp.get("tipo_strumento"), dfp.get("info_gen")["country"].values[0], self.quantity_agg.get(), self.position_agg.get(), datetime.now(), dfp.get("datafetch")["Close"].iloc[len(dfp.get("datafetch")) - 1], dfp)
+                self.combotitolo_modifica['values'] = GLOBE.MenuTitoliPortafoglioModifica()
 
-                FILE.ScritturaPortFile()
+                FILE.ScritturaPortafoglioSuFile()
                     
     def CallbackModifica(self):            
 
         print("Callbackmodifica .......")
-        print(self.quantity_modifica.get())
-        print(GLOBE.lista_NASDAQ.get(self.societa_modifica.get()))
-        print(self.position_modifica.get())
 
-        symbol = GLOBE.lista_NASDAQ.get(self.societa_modifica.get())     #restituisce il simbolo associato al nome inviato a Lista_NASDQ
+        nome = self.titolo_modifica.get()    
 
         quantita = self.quantity_modifica.get()
 
-        position = self.position_modifica.get()
+        isin = 0
+
+        for i in list(GLOBE.titolo.keys()):
+               if GLOBE.titolo[i].get("nome") == nome:
+
+                   isin = GLOBE.titolo[i].get("isin")
+
 
         if quantita == 0:       #se la quantità inserita in modifica è 0, si tramuta in un'eliminaizone dal portafoglio
    
-           del GLOBE.societa[symbol]
-           self.combosocieta_modifica['values'] = GLOBE.CheckListaModPortafoglio()
-           self.combosocieta_modifica.current(0)
-        elif quantita >= GLOBE.societa.get(symbol)["quantity"]:
+           del GLOBE.titolo[isin]
+
+           self.combotitolo_modifica['values'] = GLOBE.MenuTitoliPortafoglioModifica()
+           self.combotitolo_modifica.current(0)
+
+        elif quantita >= GLOBE.titolo[isin].get("quantity"):
 
             msg.showerror("Errore", "Sono ammesse solo operazioni di vendita")
             return 
+            
         else:
 
-            GLOBE.societa.get(symbol)["quantity"] = quantita
-            GLOBE.societa.get(symbol)["position"] = position
+            GLOBE.titolo.get(isin)["quantity"] = quantita
             
 
-        FILE.ScritturaPortFile()
+        FILE.ScritturaPortafoglioSuFile()
 
     def CallBackCerca(self):
 
-        # print("CallbackCerca.....", GLOBE.lista_NASDAQ.get(self.societa_cerca.get()))
+        print("CallbackCerca.....")
         
-        periodo_dati = self.periodo_sel.get()
+        periodizzazione = self.periodizzazione_cerca.get()
 
         data_dati = self.insert_data.get()
 
-        tipo_strumento = self.societa_cerca.get()    #restituisce il simbolo associato al nome inviato a Lista_NASDQ
+        tipo_strumento = self.titolo_cerca.get()    #restituisce il simbolo associato al nome inviato a Lista_NASDQ
 
-        isin = self.isin_inserimento.get()
+        isin = self.isin_cerca.get()
 
-        df = CALLAPI.BEESCALLER().ApiCallByIsin(isin, periodo_dati, data_dati, tipo_strumento)
+        df = CALLAPI.BEESCALLER().ApiGetAllByIsin(isin, tipo_strumento, periodizzazione, data_dati)
 
         self.valuelabelrend.set(self.testolabelrend + str(CALC.DeltaChangeAvg(df, 'Close')))
         self.valuelabelstd.set(self.testolabelstd + str(CALC.DeltaChangeStd(df, 'Close')))
         
-        PLOT.PLOTFACTORY().SubPlotLineeBarre(isin, df, 'Close', 10, 5, 5)
+        PLOT.PLOTFACTORY().SubPlotLineeBarre(df.get("info_gen")["symbol"].values[0], df.get("datafetch"), 'Close', 10, 5, 5)
 
-        self.valuelabelmav.set(self.testolabelmav + str(CALC.MovingAvgCerca(GLOBE.lista_NASDAQ.get(self.societa_cerca.get()), self.periodo_sel.get())))
+        if tipo_strumento == GLOBE.mappa_strumenti.get("Stock"):    #primo parametro simbolo
+
+            self.valuelabelmav.set(self.testolabelmav + str(CALC.MovingAvgCerca(df.get("info_gen")["symbol"].values[0], df.get("info_gen")["country"].values[0], tipo_strumento, periodizzazione)))
+        else:           #primo parametro != symbol
+
+            self.valuelabelmav.set(self.testolabelmav + str(CALC.MovingAvgCerca(df.get("info_gen")["full_name"].values[0], df.get("info_gen")["country"].values[0], tipo_strumento, periodizzazione)))

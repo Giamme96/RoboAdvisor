@@ -38,14 +38,18 @@ import globalita as GLOBE
 # info = CALLAPI.BEESCALLER().ApiCallInfoStock("aapl")
 # print(info)
 
-# fund = inv.funds.get_funds(country="united states")
-# # print(fund)
+fund = inv.funds.get_funds(country="united states")
+print(fund)
 # byvalue = fund.loc[fund["isin"] == "US9229087104"]
 # print(byvalue)
 # etfs = inv.etfs.get_etfs(country="united states")
 # byvalue_etf = etfs.loc[etfs["isin"] == "US25459W1027"]
 # print(byvalue_etf)
 
+# detf = CALLAPI.BEESCALLER().ApiCallByIsinPortafoglio("US25459W1027", "ETF")
+# print(detf)
+# isin = "US0378331005"
+# tipologia_strumento = "Stock"
 # stockss = inv.stocks.get_stocks(country="italy")
 # byvalue_stockss = stockss.loc[stockss["isin"] == "IT0003132476"]
 # print(byvalue_stockss)
@@ -62,3 +66,12 @@ import globalita as GLOBE
 
 # crypto = inv.crypto.get_cryptos_dict(columns=None, as_json=False)
 # print(crypto.get("name") == "BTC")
+
+# get_info = CALC.GetInfoGenByIsin(isin, tipologia_strumento)
+# stock = inv.stocks.get_stocks(country = country)
+# info_gen = stock.loc[stock["isin"] == isin]
+# print(get_info[1])
+
+
+info = inv.funds.get_fund_information(" Gmo Emerging Markets Fund Class Vi", country = "united states", as_json=False)
+print(info)

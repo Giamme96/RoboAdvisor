@@ -23,6 +23,7 @@ class PANORAMICACTRL():
     #Reference tab panoramica
     panoramica = 0
     frame_port = 0
+    
     def __init__(self, tabpanoramica):
         
         self.panoramica = tabpanoramica

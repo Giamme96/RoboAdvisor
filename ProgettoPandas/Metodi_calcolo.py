@@ -7,10 +7,9 @@ import globalita as GLOBE
 import API_call as CALLAPI
 
 
+def DeltaChange(dataframe, column_type):    #calcola i change moltiplicati * 100
 
-def DeltaChange(array, column_type):    #calcola i change moltiplicati * 100
-
-    colonna = array[column_type]
+    colonna = dataframe.get("datafetch")[column_type]
 
     delta = colonna.pct_change() * 100
 
@@ -18,9 +17,9 @@ def DeltaChange(array, column_type):    #calcola i change moltiplicati * 100
 
     return delta.dropna()
 
-def DeltaChangeAvg(array, column_type): #calcola media change
+def DeltaChangeAvg(dataframe, column_type): #calcola media change
 
-    colonna = array[column_type]
+    colonna = dataframe.get("datafetch")[column_type]
 
     delta = colonna.pct_change().dropna()
 
@@ -40,9 +39,9 @@ def DeltaStd(array, column_type):  #calcola std di una colonna
 
     return std_delta
 
-def DeltaChangeStd(array, column_type): #calcola std su change colonna
+def DeltaChangeStd(dataframe, column_type): #calcola std su change colonna
 
-    colonna = array[column_type]
+    colonna = dataframe[column_type]
 
     delta = colonna.pct_change().dropna()
 
@@ -50,15 +49,15 @@ def DeltaChangeStd(array, column_type): #calcola std su change colonna
     
     return std_delta
 
-def CalcoloChange(array, colonna, prezzo_riferimento_t0):  #restituisce un change moltipicato  per 100
+def CalcoloChange(dataframe, prezzo_riferimento_t0):  #restituisce il change dall'acquisto * 100
 
-    if isinstance(array, int):    
+    if isinstance(dataframe.get("datafetch"), int):    
         
         return 0
     
     else:
         
-        tempo1 = array[colonna].iloc[-1]
+        tempo1 = dataframe.get("datafetch")["Close"].iloc[-1]
         # tempo0 = array[colonna].iloc[-2]
 
         change = (tempo1 - prezzo_riferimento_t0) / prezzo_riferimento_t0 * 100  
@@ -67,12 +66,12 @@ def CalcoloChange(array, colonna, prezzo_riferimento_t0):  #restituisce un chang
 
 def TotaleInvestimento():
 
-    key_societa = list(GLOBE.societa.keys())
+    key_titolo = list(GLOBE.titolo.keys())
     totale = 0
 
-    for i in range(len(key_societa)):
+    for i in range(len(key_titolo)):
 
-        totale_parziale = GLOBE.societa.get(key_societa[i]).get("totale_ordine")
+        totale_parziale = GLOBE.titolo.get(key_titolo[i]).get("totale_ordine")
 
         totale = totale + totale_parziale
 
@@ -81,9 +80,9 @@ def TotaleInvestimento():
 def CreaMatriceCov():      #array di tipo lista, portafoglio[aapl, aal, msft, ecc]
 
     lista_portafoglio_dropped = []
-    for i in GLOBE.societa.values():
+    for i in GLOBE.titolo.values():
         
-        lista_portafoglio_return = DeltaChange(i.get("daily_adj"), "Close")
+        lista_portafoglio_return = DeltaChange(i.get("dataframe"), "Close")
         lista_portafoglio_dropped.append(lista_portafoglio_return)
 
     matrice_cov = np.cov(lista_portafoglio_dropped)
@@ -102,13 +101,13 @@ def TrasponiMatrice(matrice):
 
 def VettorePesi():
  
-    key_societa = list(GLOBE.societa.keys())
+    key_titolo = list(GLOBE.titolo.keys())
     totale_investimento = TotaleInvestimento()
     vettore_pesi = []
-    for i in range(len(key_societa)):
+    for i in range(len(key_titolo)):
 
-        peso_societa = GLOBE.societa.get(key_societa[i]).get("totale_ordine") / totale_investimento
-        vettore_pesi.append(peso_societa)
+        peso_titolo = GLOBE.titolo.get(key_titolo[i]).get("totale_ordine") / totale_investimento
+        vettore_pesi.append(peso_titolo)
 
     # print("Il vettore pesi è: ", vettore_pesi)
 
@@ -123,11 +122,6 @@ def MatriceProdotto(matriceA, matriceB):
 
 def CalcolaDevStdPortafoglio():
 
-    # array_portafoglio = []      #lista da inserire per creare la matrice var-cov
-    # for i in range(len(list(GLOBE.societa.keys()))):
-
-    #     array_portafoglio.append(list(GLOBE.societa.keys())[i])
-    
     matrice_cov = CreaMatriceCov()
 
     vettore_pesi = np.array(VettorePesi())
@@ -145,9 +139,9 @@ def RendimentoAttesoPortafoglio():
     pesi = np.array(VettorePesi())
 
     lista_portafoglio_return_avg = []
-    for i in GLOBE.societa.values():
+    for i in GLOBE.titolo.values():
         
-        lista_portafoglio_return = DeltaChangeAvg(i.get("daily_adj"), "Close")
+        lista_portafoglio_return = DeltaChangeAvg(i.get("dataframe"), "Close")
         lista_portafoglio_return_avg.append(lista_portafoglio_return)
 
     rendimento_atteso = MatriceProdotto(pesi, TrasponiMatrice(np.array(lista_portafoglio_return_avg)))
@@ -160,7 +154,7 @@ def BetaPortafoglio():
     pesi = np.array(VettorePesi())
 
     lista_portafoglio_beta = []
-    for i in GLOBE.societa.values():
+    for i in GLOBE.titolo.values():
         
         lista_portafoglio_beta.append(i.get("beta"))
 
@@ -173,7 +167,8 @@ def RegressioneBetaPortafoglio(y_titolo_datafetch, x_index_datafetch):  #inserir
     if isinstance(y_titolo_datafetch, int):    
         
         return 0
-    # dfindex = CALLAPI.BEESCALLER().ApiIndexCallPortafoglio(x_indice_symbol)  #call all'indice
+
+    
 
     df_return = DeltaChange(y_titolo_datafetch, "Close")
     dfindex_return = DeltaChange(x_index_datafetch, "Close")
@@ -190,38 +185,33 @@ def RegressioneBetaPortafoglio(y_titolo_datafetch, x_index_datafetch):  #inserir
 
     return coeff[1] #ritorna il beta
 
-def GetCurrency(array):   #restituisce la curency dell'datafetch inserito
+def GetCurrencyFromInfoGen(dataframe):   #restituisce la curency dell'datafetch inserito
 
-    if isinstance(array, int):    
+    if isinstance(dataframe, int):    
     
         return 0
 
-    currency = array["Currency"].iloc[0]
+    currency = dataframe.get("info_gen")["Currency"].values[0]
 
     return currency
 
-def GetFromDfToSocieta(array, column):   #restituisce la colonna derivante dal datfetch
+def GetItemFromInfoTech(dataframe, tipo_strumento, column):   #restituisce la colonna derivante dal datfetch
 
-    if isinstance(array, int):    
+    if isinstance(dataframe.get("info_tech"), int):    
     
         return 0
 
-    column_ret = array[column]
+    if tipo_strumento == GLOBE.mappa_strumenti.get("Fund") and column == "Beta":
+        
+        column_item = dataframe.get("info_tech")["Risk Rating"].values[0]
 
-    return column_ret
+    else:    
+        column_item = dataframe.get("info_tech")[column].values[0]
 
-def MovingAvgCerca(symbol, periodo_dati):   #country e tipo bloccati
+    return column_item
+
+def MovingAvgCerca(name_symbol, country, tipo_strumento, periodizzazione):   #country e tipo bloccati
     
-
-    mav = inv.moving_averages(name = symbol,  country = 'united states', product_type='stock', interval = periodo_dati)
+    mav = inv.moving_averages(name = name_symbol,  country = country, product_type = tipo_strumento, interval = periodizzazione)
 
     return mav
-
-def GetCountryByIsin(isin): #restituisce il paese di corrispondenza all'isin inserito
-
-    country_iniziali = isin[:2]
-    country = GLOBE.country_isin.get(country_iniziali)
-
-    print(country)
-
-    return country

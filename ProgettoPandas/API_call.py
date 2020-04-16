@@ -13,112 +13,104 @@ import Metodi_calcolo as CALC
 
 class BEESCALLER():
 
-    key = 'OQ5SXA6KT34O569F'
-    api = 0
+    
+    def ApiGetAllByIsin(self, isin, tipologia_strumento, periodicita, start):    #restituisce il nome di corrispondenza all'isin inserito
 
-    mappa_periodicita = {
-        "Daily" : "Daily",
-        "Weekly" : "Weekly",
-        "Monthly" : "Monthly"
-    }
+        country_iniziali = isin[:2]
+        country = GLOBE.country_isin.get(country_iniziali)
 
-    # mappa_strumenti = {
-    #     "Stock" : ApiCallFromDictStock(),
-    #     "ETF" : "Weekly",
-    #     "Funds" : "Monthly"
-    # }
-
-    def AdjApiCall(self, symbol, periodicita, start):        #start convertibile in data
-
-        # start = datetime(sy, sm, sd)
         endus = datetime.now()
         endeu = endus.strftime("%d/%m/%Y")
-       
-
-        # df = web.DataReader(symbol, self.mappa_periodicita[periodicita], start, end, api_key = self.key)
-        df = inv.get_stock_historical_data(stock = symbol, country = "united states", from_date = start, to_date = endeu, as_json=False, order='ascending', interval = self.mappa_periodicita[periodicita])
-        return df
-
-    def ApiCallByIsin(self, isin, periodicita, start, tipologia_strumento):        
-
-        # start = datetime(sy, sm, sd)
-        endus = datetime.now()
-        endeu = endus.strftime("%d/%m/%Y")
-        country = CALC.GetCountryByIsin(isin)
-
-        if tipologia_strumento == "Stock":
+        
+        if tipologia_strumento == GLOBE.mappa_strumenti.get("Stock"):
 
             stock = inv.stocks.get_stocks(country = country)
-            by_isin_value_to_symbol = stock.loc[stock["isin"] == isin]["symbol"].values[0]
+            info_gen = stock.loc[stock["isin"] == isin]
+            df = inv.get_stock_historical_data(stock = info_gen["symbol"].values[0], country = country, from_date = start, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita[periodicita])
 
-            df = inv.get_stock_historical_data(stock = by_isin_value_to_symbol, country = country, from_date = start, to_date = endeu, as_json=False, order='ascending', interval = self.mappa_periodicita[periodicita])
-        
-        elif tipologia_strumento == "ETF":
+        elif tipologia_strumento == GLOBE.mappa_strumenti.get("ETF"):
 
             etf = inv.etfs.get_etfs(country = country)
-            by_isin_value_to_symbol = etf.loc[etf["isin"] == isin]["symbol"].values[0]
-
-            df = inv.get_etf_historical_data(etf = by_isin_value_to_symbol, country = country, from_date = start, to_date = endeu, as_json=False, order='ascending', interval = self.mappa_periodicita[periodicita])
-
-        # elif tipologia_strumento == "Fund":
-
-        #     fund = inv.funds.get_funds(country = country)
-        #     by_isin_value_to_symbol = fund.loc[fund["isin"] == isin]["symbol"].values[0]
-
-        #     df = inv.get_fund_historical_data(fund = by_isin_value_to_symbol, country = country, from_date = start, to_date = endeu, as_json=False, order='ascending', interval = self.mappa_periodicita[periodicita])
+            info_gen = etf.loc[etf["isin"] == isin]
+            df = inv.get_etf_historical_data(etf = info_gen["name"].values[0], country = country, from_date = start, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita[periodicita])
         
-        return df
+        elif tipologia_strumento == GLOBE.mappa_strumenti.get("Fund"):
 
-    def AdjApiCallPortafoglio(self, symbol):        #call all'api da inserire nel portafoglio ultime 60 obs.
+            fund = inv.funds.get_funds(country = country)
+            info_gen = fund.loc[fund["isin"] == isin]
+            df = inv.get_fund_historical_data(fund = info_gen["name"].values[0], country = country, from_date = start, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita[periodicita])
+        
+        all_info = {     #dict con tutte le informazioni
+                    
+            "datafetch" : df, 
+            "info_gen" : info_gen, 
+            "tipo_strumento" : tipologia_strumento
+           }   
+
+        return all_info
+        
+    def ApiGetAllByIsinPortafoglio(self, isin, tipologia_strumento):        
 
         years_obs = timedelta(days=365.24) * 5      
         endus = datetime.now()                      
         endeu = endus.strftime("%d/%m/%Y")          #conversioni date US a EU
         startus = endus - years_obs
         starteu = startus.strftime("%d/%m/%Y")
-      
-        # dfp = web.DataReader(symbol, self.mappa_periodicita["Monthly"], start, endeu, api_key = self.key)
-        dfp = inv.get_stock_historical_data(stock = symbol, country = "united states", from_date = starteu, to_date = endeu, as_json = False, order = 'ascending', interval = self.mappa_periodicita.get("Monthly"))
-        print(f"Call API portafoglio {symbol}")
 
-        return dfp
+        country_iniziali = isin[:2]         #convertitore ISIN to country
+        country = GLOBE.country_isin.get(country_iniziali)
+
+        if tipologia_strumento == GLOBE.mappa_strumenti.get("Stock"):
+
+            stock = inv.stocks.get_stocks(country = country)
+            info_gen = stock.loc[stock["isin"] == isin]
+            info_tech = inv.stocks.get_stock_information(info_gen["symbol"].values[0], country, as_json=False)
+            df = inv.get_stock_historical_data(stock = info_gen["symbol"].values[0], country = country, from_date = starteu, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita.get("Monthly"))
+
+        elif tipologia_strumento == GLOBE.mappa_strumenti.get("ETF"):
+
+            etf = inv.etfs.get_etfs(country = country)
+            info_gen = etf.loc[etf["isin"] == isin]
+            info_tech = inv.funds.get_fund_information(info_gen["name"].values[0], country, as_json=False)
+            df = inv.get_etf_historical_data(etf = info_gen["name"].values[0], country = country, from_date = starteu, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita.get("Monthly"))
+        
+        elif tipologia_strumento == GLOBE.mappa_strumenti.get("Fund"):
+
+            fund = inv.funds.get_funds(country = country)
+            info_gen = fund.loc[fund["isin"] == isin]
+            info_tech = inv.etfs.get_etf_information(info_gen["name"].values[0], country, as_json=False)
+            df = inv.get_fund_historical_data(fund = info_gen["name"].values[0], country = country, from_date = starteu, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita.get("Monthly"))
+        
+        all_info_portafoglio = {  #dict con tutte le informazioni
+               
+            "datafetch" : df,
+            "info_gen" : info_gen, 
+            "info_tech" : info_tech, 
+            "tipo_strumento" : tipologia_strumento
+            }    
+
+        return all_info_portafoglio
     
-    def ApiCallInfoStock(self, symbol): #restituisce le info della società
+    # def ApiCallInfoStock(self, symbol): #restituisce le info della società
 
-        info_stock = inv.stocks.get_stock_information(stock = symbol, country = "united states")
+    #     info_stock = inv.stocks.get_stock_information(stock = symbol, country = "united states")
 
-        return info_stock
+    #     return info_stock
         
     def ChiamataApiPortafoglioPanoramica(self): 
 
         # index_call = self.ApiIndexCallPortafoglio("nasdaq")  #chiamata all'indice per il calcolo del Beta
         
-        for i in list(GLOBE.societa.keys()):
+        for i in list(GLOBE.titolo.keys()):
 
-            if GLOBE.societa.get(i).get("daily_adj") == -1 and GLOBE.societa.get(i).get("df_info") == -1:
+            if GLOBE.titolo.get(i).get("dataframe") == -1:
 
-                datafetch = BEESCALLER().AdjApiCallPortafoglio(i)
-                datafetch_info = BEESCALLER().ApiCallInfoStock(i)  #tipo dict
+                dataframe_dict = BEESCALLER().ApiGetAllByIsinPortafoglio(i, GLOBE.titolo.get(i).get("tipo_strumento"))
  
-                # GLOBE.societa.get(i).get("daily_adj") = datafetch
-                GLOBE.societa.get(i).update(daily_adj = datafetch)
-                GLOBE.societa.get(i).update(df_info = datafetch_info)
-                GLOBE.societa.get(i).update(totale_change = CALC.CalcoloChange(GLOBE.societa.get(i).get("daily_adj"), "Close", GLOBE.societa.get(i).get("price_ordine")))
-                GLOBE.societa.get(i).update(beta = datafetch_info["Beta"].values[0])
-                GLOBE.societa.get(i).update(one_year_change = datafetch_info["1-Year Change"].values[0])
-                GLOBE.societa.get(i).update(currency = CALC.GetCurrency(GLOBE.societa.get(i).get("daily_adj")))
-                print(f"Inserisco {i} nel dict societa.")
-
-    def ApiIndexCallPortafoglio(self, index_symbol):      #TODO da implementare nel caso vengano scelti per il portafoglio titoli diversi dal paniere nasdaq per fare la regressione
-                                                            #restituisce il datafetch raw
-        years_obs = timedelta(days=365.24) * 5      
-        endus = datetime.now()                      
-        endeu = endus.strftime("%d/%m/%Y")          #conversioni date US a EU
-        startus = endus - years_obs
-        starteu = startus.strftime("%d/%m/%Y")
-      
-        dfindex = inv.get_index_historical_data(index = index_symbol, country = 'united states', from_date = starteu , to_date = endeu, as_json = False, order = 'ascending', interval = self.mappa_periodicita.get("Monthly"))
-        print(f"Api index : {index_symbol}")
-
-        return dfindex      
-
+                GLOBE.titolo.get(i).update(dataframe = dataframe_dict)
+                GLOBE.titolo.get(i).update(change_dall_acquisto = CALC.CalcoloChange(GLOBE.titolo.get(i).get("dataframe").get("datafetch"), "Close", GLOBE.titolo.get(i).get("price_ordine")))
+                GLOBE.titolo.get(i).update(beta = dataframe_dict.get("info_tech")["Beta"].values[0])
+                GLOBE.titolo.get(i).update(one_year_change = dataframe_dict.get("info_tech")["1-Year Change"].values[0])
+                GLOBE.titolo.get(i).update(currency = dataframe_dict.get("info_gen")["currency"].values[0])
+                print(f"Aggiorno il dict titolo.")
+    

@@ -22,49 +22,7 @@ import Modificaport_ctrl as MODCTRL
 
 class PLOTFACTORY():
   
-    # def PlotLineePanda(self, symbol, array, recordtype, mavglenght, figlenght, figheight):
-        
-    #     # MODCTRL.MODIFICAPORTCTRL().destroy(lblframe_botL)          #da controllare se si usano i canvas frame
-    #     figure = plt.figure(1, clear = True)
-    #     ax = figure.add_subplot(111)
-    #     recordY = array[recordtype]
-
-    #     mavg = recordY.rolling(window= mavglenght).mean()
-
-    #     ax.set_label("Date")
-    #     ax.set_label("Prices")
-    #     ax.set_title(str(symbol) + " daily prices data")
-
-
-    #     ax.plot(recordY, label = symbol)
-    #     ax.plot(mavg, label = 'Media Mobile')
-
-    #     # plt.xticks(np.arange(0, 30, step=5))        
-    #     plt.legend()
-    #     figure.autofmt_xdate()
-
-    #     return figure
-            
-    # def PlotRendimentoPanda(self, symbol, array, recordtype, figlenght, figheight):
-
-    #     # MODCTRL.MODIFICAPORTCTRL().destroy(lblframe_botR)      #da controllare se si usano i canvas frame
-    #     figure1 = plt.figure(2, clear = True)
-    #     ax1 = figure1.add_subplot(111)
-    #     rendimento = CALC.DeltaChange(array, recordtype)
-
-    #     ax1.set_xlabel("Date")
-    #     ax1.set_ylabel("Percent")
-    #     ax1.set_title(str(symbol) + " returns data")
-
-    #     ax1.plot(rendimento, label = symbol)
-        
-    #     # plt.xticks(np.arange(0, 30, step=10))
-    #     plt.legend()
-    #     figure1.autofmt_xdate()
-
-    #     return figure1
-
-    def SubPlotLineeBarre(self, symbol, array, recordtype, mavglenght, figlenght, figheight):
+    def SubPlotLineeBarre(self, symbol, dataframe, recordtype, mavglenght, figlenght, figheight):
         
         plt.close('all')    #chiusura di tutti i grafici
        
@@ -72,7 +30,7 @@ class PLOTFACTORY():
         style.use('ggplot')
         # plt.xticks(np.arange(0, 30, step=5)) 
 
-        recordY = array[recordtype] #selezione colonna
+        recordY = dataframe.get("datafetch")[recordtype] #selezione colonna
 
         fig = plt.figure(1, clear = True)
         ax = fig.add_subplot(121)
@@ -89,7 +47,7 @@ class PLOTFACTORY():
         #plot 1 L-------------------------------------
 
         #plot 2 R-------------------------------------
-        rendimento = CALC.DeltaChange(array, recordtype)
+        rendimento = CALC.DeltaChange(dataframe, recordtype)
         ax1.plot(rendimento, label = symbol)
         ax1.set_title(str(symbol) + " returns data")
         #plot 2 R-------------------------------------
