@@ -69,14 +69,14 @@ class MODIFICAPORTCTRL():
         
         #Creazione menu a tendina elenco società        #dasostituire nome variabili
         self.titolo_cerca = tk.StringVar()
-        combostrumenti_cerca = ttk.Combobox(frame_cerca, state = 'readonly', values = GLOBE.mappa_strumenti.values(), textvariable = self.titolo_cerca)
+        combostrumenti_cerca = ttk.Combobox(frame_cerca, state = 'readonly', values = list(GLOBE.mappa_strumenti), textvariable = self.titolo_cerca)
         # combotitolo_cerca['values'] = list(GLOBE.lista_NASDAQ.keys())
         combostrumenti_cerca.grid(column = 1, row = 0, sticky = "w")
         combostrumenti_cerca.current(0)
 
         #Creazione menu a tendina elenco periodizzazione dati   DA GUARDARE
         self.periodizzazione_cerca = tk.StringVar()
-        combodata = ttk.Combobox(frame_cerca, state = 'readonly', values = GLOBE.mappa_periodicita.values(), textvariable = self.periodizzazione_cerca)
+        combodata = ttk.Combobox(frame_cerca, state = 'readonly', values = list(GLOBE.mappa_periodicita), textvariable = self.periodizzazione_cerca)
         combodata.grid(column = 2, row = 0)
         combodata.current(0)        
 
@@ -128,7 +128,7 @@ class MODIFICAPORTCTRL():
         
         #Creazione menu a tendina titoli
         self.titolo_agg = tk.StringVar()
-        combostrumenti_aggiungi = ttk.Combobox(frame_aggiungi, state = 'readonly', values = GLOBE.mappa_strumenti.values(), textvariable = self.titolo_agg)
+        combostrumenti_aggiungi = ttk.Combobox(frame_aggiungi, state = 'readonly', values = list(GLOBE.mappa_strumenti), textvariable = self.titolo_agg)
         # combosocieta['values'] = list(GLOBE.lista_NASDAQ.keys())
         combostrumenti_aggiungi.grid(column = 1, row = 0)
         combostrumenti_aggiungi.current(0)
@@ -202,7 +202,18 @@ class MODIFICAPORTCTRL():
 
                 dfp = CALLAPI.BEESCALLER().ApiGetAllByIsinPortafoglio(isin, tipologia_strumento)
 
-                GLOBE.AggiungiTitolo(isin, dfp.get("info_gen")["full_name"].values[0], dfp.get("info_gen")["symbol"].values[0], dfp.get("tipo_strumento"), dfp.get("info_gen")["country"].values[0], self.quantity_agg.get(), self.position_agg.get(), datetime.now(), dfp.get("datafetch")["Close"].iloc[len(dfp.get("datafetch")) - 1], dfp)
+                if len(dfp.get("datafetch")) < 60:
+
+                    msg.showwarning(title = "Mancanza dati", message = "Le osservazioni non permettono un calcolo del beta adeguato.")
+
+                    return
+
+                GLOBE.AggiungiTitolo(isin, dfp.get("info_gen")["name"].values[0], dfp.get("info_gen")["symbol"].values[0], 
+                                        dfp.get("tipo_strumento"), dfp.get("info_gen")["country"].values[0], self.quantity_agg.get(), 
+                                        self.position_agg.get(), datetime.now(), dfp.get("datafetch")["Close"].iloc[len(dfp.get("datafetch")) - 1], dfp)
+                
+                msg.showinfo(title = None, message = "Operazione eseguita con successo")
+
                 self.combotitolo_modifica['values'] = GLOBE.MenuTitoliPortafoglioModifica()
 
                 FILE.ScritturaPortafoglioSuFile()
@@ -259,7 +270,7 @@ class MODIFICAPORTCTRL():
         self.valuelabelrend.set(self.testolabelrend + str(CALC.DeltaChangeAvg(df, 'Close')))
         self.valuelabelstd.set(self.testolabelstd + str(CALC.DeltaChangeStd(df, 'Close')))
         
-        PLOT.PLOTFACTORY().SubPlotLineeBarre(df.get("info_gen")["symbol"].values[0], df.get("datafetch"), 'Close', 10, 5, 5)
+        PLOT.PLOTFACTORY().SubPlotLineeBarre(df, 'Close', 10, 5, 5)
 
         if tipo_strumento == GLOBE.mappa_strumenti.get("Stock"):    #primo parametro simbolo
 

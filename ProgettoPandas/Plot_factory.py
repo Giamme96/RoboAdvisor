@@ -22,10 +22,10 @@ import Modificaport_ctrl as MODCTRL
 
 class PLOTFACTORY():
   
-    def SubPlotLineeBarre(self, symbol, dataframe, recordtype, mavglenght, figlenght, figheight):
+    def SubPlotLineeBarre(self, dataframe, recordtype, mavglenght, figlenght, figheight):
         
         plt.close('all')    #chiusura di tutti i grafici
-       
+        symbol = dataframe.get("info_gen")["symbol"].values[0]
         # Adjusting the style of matplotlib
         style.use('ggplot')
         # plt.xticks(np.arange(0, 30, step=5)) 

@@ -29,19 +29,19 @@ def DeltaChangeAvg(dataframe, column_type): #calcola media change
     
     return avg_delta
 
-def DeltaStd(array, column_type):  #calcola std di una colonna
+# def DeltaStd(array, column_type):  #calcola std di una colonna
 
-    colonna = array[column_type]
+#     colonna = array[column_type]
 
-    std_delta = colonna.std()    
+#     std_delta = colonna.std()    
 
-    # print(std_delta, "\n\n\n")
+#     # print(std_delta, "\n\n\n")
 
-    return std_delta
+#     return std_delta
 
 def DeltaChangeStd(dataframe, column_type): #calcola std su change colonna
 
-    colonna = dataframe[column_type]
+    colonna = dataframe.get("datafetch")[column_type]
 
     delta = colonna.pct_change().dropna()
 
@@ -51,7 +51,7 @@ def DeltaChangeStd(dataframe, column_type): #calcola std su change colonna
 
 def CalcoloChange(dataframe, prezzo_riferimento_t0):  #restituisce il change dall'acquisto * 100
 
-    if isinstance(dataframe.get("datafetch"), int):    
+    if isinstance(dataframe, int):    
         
         return 0
     
@@ -82,8 +82,7 @@ def CreaMatriceCov():      #array di tipo lista, portafoglio[aapl, aal, msft, ec
     lista_portafoglio_dropped = []
     for i in GLOBE.titolo.values():
         
-        lista_portafoglio_return = DeltaChange(i.get("dataframe"), "Close")
-        lista_portafoglio_dropped.append(lista_portafoglio_return)
+        lista_portafoglio_dropped.append(DeltaChange(i.get("dataframe"), "Close"))
 
     matrice_cov = np.cov(lista_portafoglio_dropped)
     # print("La matrice covarianza del portafoglio: ", matrice_cov)
@@ -191,17 +190,17 @@ def GetCurrencyFromInfoGen(dataframe):   #restituisce la curency dell'datafetch 
     
         return 0
 
-    currency = dataframe.get("info_gen")["Currency"].values[0]
+    currency = dataframe.get("info_gen")["currency"].values[0]
 
     return currency
 
 def GetItemFromInfoTech(dataframe, tipo_strumento, column):   #restituisce la colonna derivante dal datfetch
 
-    if isinstance(dataframe.get("info_tech"), int):    
+    if isinstance(dataframe, int):    
     
         return 0
 
-    if tipo_strumento == GLOBE.mappa_strumenti.get("Fund") and column == "Beta":
+    if tipo_strumento == GLOBE.mappa_strumenti.get("fund") and column == "Beta":
         
         column_item = dataframe.get("info_tech")["Risk Rating"].values[0]
 

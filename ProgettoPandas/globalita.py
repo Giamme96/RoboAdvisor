@@ -15,16 +15,16 @@ country_isin = {            #da completare con tutti i riferimenti
 
 mappa_strumenti = {
 
-        "Stock" : "stock",
-        "ETF" : "etf",
-        "Fund" : "fund"
+        "stock" : "stock",
+        "etf" : "etf",
+        "fund" : "fund"
     }
 
 mappa_periodicita = {
 
-        "Daily" : "daily",
-        "Weekly" : "weekly",
-        "Monthly" : "monthly"
+        "Daily" : "Daily",
+        "Weekly" : "Weekly",
+        "Monthly" : "Monthly"
     }
     
 def AggiungiTitolo(isin, nome, symbol, tipologia_strumento, country, quantita, position, date, price, dataframe_dict):

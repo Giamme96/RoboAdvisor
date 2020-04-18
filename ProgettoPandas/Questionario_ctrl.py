@@ -24,6 +24,10 @@ class QUESTIONARIOCTRL():
 
     questionario = 0
 
+    array_risposte_questionario = []
+    array_risposte_radio = []
+    
+
     lista_domande_questionario = ["Età",
                                     "Professione",
                                     "In quale tipologia di prodotti di tipo finanziario investe o ha investito in passato?",  
@@ -50,7 +54,7 @@ class QUESTIONARIOCTRL():
         self.frame_radio = ttk.LabelFrame(self.questionario, text = "Compila il questionario con i radio buttons per la profilazione")
         self.frame_radio.grid(column = 0, row = 1, sticky = "nswe")
 
-        self.invia_questionario = ttk.Button(self.questionario, text = "Invia")    #TODO da fare la callback e invio dati 
+        self.invia_questionario = ttk.Button(self.questionario, text = "Invia", command = self.CallBackQuestionario)    #TODO da fare la callback e invio dati 
         self.invia_questionario.grid(column = 0, row = 2, sticky = "nswe")
 
         self.CreaQuestionario(self.frame_questionario)
@@ -65,13 +69,14 @@ class QUESTIONARIOCTRL():
     def CreaEntryWidget(self, master, r, c):      
 
         stringa = tk.StringVar()    #TODO da controllare 
-        insert_data = tk.Entry(master)
-        insert_data.grid(column = c, row = r)    
+        insert_data = tk.Entry(master,  textvariable = stringa)
+        insert_data.grid(column = c, row = r)
+        self.array_risposte_questionario.append(stringa)    
         
     def CreaRadio(self, master, domanda_corrente, r):   #crea tutti i radio nella lista passata [[domanda, 1, 2, 3]....]
 
-        risposta = tk.StringVar() 
-      
+        risposta = tk.IntVar() 
+             
         index_risposte = 1
         first = True
         for i in domanda_corrente:
@@ -82,10 +87,12 @@ class QUESTIONARIOCTRL():
                 continue 
             
             radio = tk.Radiobutton(master, text = i, variable = risposta, value = index_risposte)
-            radio.select()                          #TODO da controllare che serva a qualcosa
+            radio.deselect()                         
             radio.grid(column = index_risposte, row = r, sticky = "nswe")
             
             index_risposte += 1
+
+        self.array_risposte_radio.append(risposta)
 
     def CreaQuestionario(self, frame_master):    #Crea un questinario a domande aperte da una lista passata
 
@@ -107,5 +114,21 @@ class QUESTIONARIOCTRL():
 
             index += 1
     
+    def CallBackQuestionario(self):
+
+      
+        risposte_questionario = self.array_risposte_questionario
+        risposte_radio = self.array_risposte_radio
+
+        for item in risposte_radio:
+            print(item.get())
+        
+        for item in risposte_questionario:
+
+            print(item.get())
+        
+
+
+
 
         

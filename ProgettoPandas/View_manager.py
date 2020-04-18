@@ -23,6 +23,7 @@ class VIEWMANAGER():
     questctrl = 0
     
     def __init__(self):
+        
         self.win = tk.Tk()
         self.win.title("ROBOCOOP")
 
@@ -60,7 +61,9 @@ class VIEWMANAGER():
         selection = event.widget.select()
         tab = event.widget.tab(selection, "text")
         # print("text:", tab)
-        print(f"Cambio alla tab {tab}, società è: {GLOBE.societa.keys()}")
+        print(f"Cambio alla tab {tab}, i titoli sono: {GLOBE.titolo.keys()}")
         if  tab == "Panoramica":
        
             TAB.Tabella(self.panctrl.frame_port)
+            self.panctrl.SetPanoramicaTechValues()
+

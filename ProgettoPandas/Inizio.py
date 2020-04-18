@@ -30,5 +30,6 @@ viewmanager.win.mainloop()
 
 
 #TODO aggiornamento dei risultati portafoglio rend dev ecc con cambio tab
+#TODO trovare un modo per restituire il risk rating e il beta tramite lo stesso array
 
 

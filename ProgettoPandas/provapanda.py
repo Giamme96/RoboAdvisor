@@ -38,8 +38,8 @@ import globalita as GLOBE
 # info = CALLAPI.BEESCALLER().ApiCallInfoStock("aapl")
 # print(info)
 
-fund = inv.funds.get_funds(country="united states")
-print(fund)
+# fund = inv.funds.get_funds(country="united states")
+# print(fund)
 # byvalue = fund.loc[fund["isin"] == "US9229087104"]
 # print(byvalue)
 # etfs = inv.etfs.get_etfs(country="united states")
@@ -73,5 +73,18 @@ print(fund)
 # print(get_info[1])
 
 
-info = inv.funds.get_fund_information(" Gmo Emerging Markets Fund Class Vi", country = "united states", as_json=False)
-print(info)
+# info = inv.funds.get_fund_information("Gmo Emerging Markets Fund Class Vi", country = "united states", as_json=False)
+# print(info)
+country = "italy"
+isin = "IT0004986086"
+
+years_obs = timedelta(days=365.24) * 5      
+endus = datetime.now()                      
+endeu = endus.strftime("%d/%m/%Y")          #conversioni date US a EU
+startus = endus - years_obs
+starteu = startus.strftime("%d/%m/%Y")
+
+fund = inv.funds.get_funds(country = country)
+info_gen = fund.loc[fund["isin"] == isin]
+info_tech = inv.funds.get_fund_information(info_gen["name"].values[0], country, as_json=False)
+df = inv.get_fund_historical_data(fund = info_gen["name"].values[0], country = country, from_date = starteu, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita.get("Monthly"))

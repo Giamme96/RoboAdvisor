@@ -282,16 +282,20 @@ import tkinter as tk
 import globalita as GLOBE
 
 def Tabella(master):
-    righe = len(list(GLOBE.societa.keys()))
+
+    if len(GLOBE.titolo) == 0:
+        return
+    
+    righe = len(list(GLOBE.titolo.keys()))
    
-    colonne = len(list(GLOBE.societa.get(list(GLOBE.societa.keys())[0]).keys())) - 1 
-    tabella = Sheet(master, data = [[f"Row {r}, Column {c}" for c in range(colonne)] for r in range(righe)], height = righe * 50, width = colonne * 130)
+    colonne = len(list(GLOBE.titolo.get(list(GLOBE.titolo.keys())[0]).keys())) - 1
+    tabella = Sheet(master, data = [[f"Row {r}, Column {c}" for c in range(colonne)] for r in range(righe)], height = righe * 55, width = colonne * 130)
 
         
     tabella.headers((f"Header{c}" for c in range(colonne)))
-    key_societa = list(GLOBE.societa.keys())
-    key_simbolo = GLOBE.societa.get(key_societa[0]).keys()
-    header = list(key_simbolo)
+    key_titolo = list(GLOBE.titolo.keys())
+    key_isin = GLOBE.titolo.get(key_titolo[0]).keys()
+    header = list(key_isin)
     index = 0
 
     for i in header:        #mi crea gli header della tabella
@@ -302,11 +306,11 @@ def Tabella(master):
         if index == colonne:
             break
     
-    for j in range(len(key_societa)):   #mi riempe le celle della tabella
+    for j in range(len(key_titolo)):   #mi riempe le celle della tabella
 
         for k in range(len(header) - 1):
 
-            tabella.set_cell_data(j, k, value = GLOBE.societa.get(key_societa[j]).get(header[k]))
+            tabella.set_cell_data(j, k, value = GLOBE.titolo.get(key_titolo[j]).get(header[k]))
     
     tabella.grid(row = 0, column = 0, sticky = "nswe")
 

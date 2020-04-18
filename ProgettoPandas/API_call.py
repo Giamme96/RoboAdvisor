@@ -22,19 +22,19 @@ class BEESCALLER():
         endus = datetime.now()
         endeu = endus.strftime("%d/%m/%Y")
         
-        if tipologia_strumento == GLOBE.mappa_strumenti.get("Stock"):
+        if tipologia_strumento == GLOBE.mappa_strumenti.get("stock"):
 
             stock = inv.stocks.get_stocks(country = country)
             info_gen = stock.loc[stock["isin"] == isin]
             df = inv.get_stock_historical_data(stock = info_gen["symbol"].values[0], country = country, from_date = start, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita[periodicita])
 
-        elif tipologia_strumento == GLOBE.mappa_strumenti.get("ETF"):
+        elif tipologia_strumento == GLOBE.mappa_strumenti.get("etf"):
 
             etf = inv.etfs.get_etfs(country = country)
             info_gen = etf.loc[etf["isin"] == isin]
             df = inv.get_etf_historical_data(etf = info_gen["name"].values[0], country = country, from_date = start, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita[periodicita])
         
-        elif tipologia_strumento == GLOBE.mappa_strumenti.get("Fund"):
+        elif tipologia_strumento == GLOBE.mappa_strumenti.get("fund"):
 
             fund = inv.funds.get_funds(country = country)
             info_gen = fund.loc[fund["isin"] == isin]
@@ -60,25 +60,29 @@ class BEESCALLER():
         country_iniziali = isin[:2]         #convertitore ISIN to country
         country = GLOBE.country_isin.get(country_iniziali)
 
-        if tipologia_strumento == GLOBE.mappa_strumenti.get("Stock"):
+        df = 0
+        info_gen = 0
+        info_tech = 0
+
+        if tipologia_strumento == GLOBE.mappa_strumenti.get("stock"):
 
             stock = inv.stocks.get_stocks(country = country)
             info_gen = stock.loc[stock["isin"] == isin]
             info_tech = inv.stocks.get_stock_information(info_gen["symbol"].values[0], country, as_json=False)
             df = inv.get_stock_historical_data(stock = info_gen["symbol"].values[0], country = country, from_date = starteu, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita.get("Monthly"))
 
-        elif tipologia_strumento == GLOBE.mappa_strumenti.get("ETF"):
+        elif tipologia_strumento == GLOBE.mappa_strumenti.get("etf"):
 
             etf = inv.etfs.get_etfs(country = country)
             info_gen = etf.loc[etf["isin"] == isin]
-            info_tech = inv.funds.get_fund_information(info_gen["name"].values[0], country, as_json=False)
+            info_tech = inv.etfs.get_etf_information(info_gen["name"].values[0], country, as_json=False)
             df = inv.get_etf_historical_data(etf = info_gen["name"].values[0], country = country, from_date = starteu, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita.get("Monthly"))
         
-        elif tipologia_strumento == GLOBE.mappa_strumenti.get("Fund"):
+        elif tipologia_strumento == GLOBE.mappa_strumenti.get("fund"):
 
             fund = inv.funds.get_funds(country = country)
             info_gen = fund.loc[fund["isin"] == isin]
-            info_tech = inv.etfs.get_etf_information(info_gen["name"].values[0], country, as_json=False)
+            info_tech = inv.funds.get_fund_information(info_gen["name"].values[0], country, as_json=False)
             df = inv.get_fund_historical_data(fund = info_gen["name"].values[0], country = country, from_date = starteu, to_date = endeu, as_json=False, order='ascending', interval = GLOBE.mappa_periodicita.get("Monthly"))
         
         all_info_portafoglio = {  #dict con tutte le informazioni
@@ -108,8 +112,9 @@ class BEESCALLER():
                 dataframe_dict = BEESCALLER().ApiGetAllByIsinPortafoglio(i, GLOBE.titolo.get(i).get("tipo_strumento"))
  
                 GLOBE.titolo.get(i).update(dataframe = dataframe_dict)
-                GLOBE.titolo.get(i).update(change_dall_acquisto = CALC.CalcoloChange(GLOBE.titolo.get(i).get("dataframe").get("datafetch"), "Close", GLOBE.titolo.get(i).get("price_ordine")))
-                GLOBE.titolo.get(i).update(beta = dataframe_dict.get("info_tech")["Beta"].values[0])
+                GLOBE.titolo.get(i).update(change_dall_acquisto = CALC.CalcoloChange(GLOBE.titolo.get(i).get("dataframe"), GLOBE.titolo.get(i).get("price_ordine")))
+                GLOBE.titolo.get(i).update(beta = CALC.GetItemFromInfoTech(dataframe_dict, GLOBE.titolo.get(i).get("tipo_strumento"), "Beta"))
+                # dataframe_dict.get("info_tech")["Beta"].values[0])
                 GLOBE.titolo.get(i).update(one_year_change = dataframe_dict.get("info_tech")["1-Year Change"].values[0])
                 GLOBE.titolo.get(i).update(currency = dataframe_dict.get("info_gen")["currency"].values[0])
                 print(f"Aggiorno il dict titolo.")
