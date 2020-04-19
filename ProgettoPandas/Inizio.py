@@ -14,7 +14,7 @@ import globalita as GLOBE
 import API_call as CALLAPI
 import Lavoro_file as FILE
 
-
+FILE.LetturaDaProfilazione()
 FILE.LetturaPortafoglioDaFile()
 
 CALLAPI.BEESCALLER().ChiamataApiPortafoglioPanoramica()
@@ -31,5 +31,7 @@ viewmanager.win.mainloop()
 
 #TODO aggiornamento dei risultati portafoglio rend dev ecc con cambio tab
 #TODO trovare un modo per restituire il risk rating e il beta tramite lo stesso array
+#TODO guardare ilò problema degli int nel calcolo quoziente
+#TODO Abbellire i form 
 
 

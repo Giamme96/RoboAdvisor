@@ -34,7 +34,6 @@ class PANORAMICACTRL():
         self.panoramica = tabpanoramica
 
         
-
         self.tot_investimento = tk.StringVar()
         self.rendimento_atteso = tk.StringVar()
         self.dev_std = tk.StringVar()
@@ -61,8 +60,6 @@ class PANORAMICACTRL():
 
         label_beta = ttk.Label(frame_portafoglio, text = f"Il beta di portafoglio è: {self.beta_portafoglio}")
         label_beta.grid(column = 0, row = 3, sticky = "nswe")
-
-        
 
     def SetPanoramicaTechValues(self):
 

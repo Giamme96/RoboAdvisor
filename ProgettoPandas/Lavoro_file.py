@@ -49,50 +49,65 @@ def LetturaPortafoglioDaFile():
         
             pass
 
-def ScritturaQuestionarioSuFile():
-    
-    jsonfile = {}
+# def ScritturaQuestionarioSuFile():  #scrive su file un nested dict con domande e risposte ricevute dal questionario
 
-        # "questionario" : questionario = {},
-        # "checkbox" : checkbox = {}
-    questionario = {}
-    checkbox = {}
-    
-    for item in QUESTCTRL.QUESTIONARIOCTRL().lista_domande_questionario:
+#     questionario = {}
+#     checkbox = {}
+#     jsonfile = {
+
+#         "questionario" : questionario,
+#         "checkbox" : checkbox
+#     }
+
+#     for item in QUESTCTRL.QUESTIONARIOCTRL().lista_domande_questionario:
         
-        index = 0
+#         index = 0
 
-        temp_questionario = {
+#         temp_questionario = {
             
-            "id" : index,
-            "domanda" : item,
-            "risposta" : QUESTCTRL.QUESTIONARIOCTRL().array_risposte_questionario[index]
-        }
+#             "id" : index,
+#             "domanda" : item,
+#             "risposta" : QUESTCTRL.QUESTIONARIOCTRL().array_risposte_questionario[index]
+#         }
 
-        jsonfile.get("questionario")[QUESTCTRL.QUESTIONARIOCTRL().lista_domande_questionario[index]] = temp_questionario
+#         # jsonfile.get("questionario")[QUESTCTRL.QUESTIONARIOCTRL().lista_domande_questionario[index]] = temp_questionario
+#         # jsonfile.get("questionario")[jsonfile.get("questionario").get("id")] = temp_questionario
 
-    for item in QUESTCTRL.QUESTIONARIOCTRL().lista_domande_questionario_checkbox():
+#     jsonfile.keys()[0] = temp_questionario
 
-        index = 0
+#     for item in QUESTCTRL.QUESTIONARIOCTRL().lista_domande_questionario_checkbox:
 
-        temp_checkbox = {
+#         index = 0
 
-            "id" : index,
-            "domanda" : item[0],
-            "risposta" : item[QUESTCTRL.QUESTIONARIOCTRL().array_risposte_radio]
-        }    
-    
-    jsonfile = {
+#         temp_checkbox = {
 
-        "questionario" : questionario,
-        "checkbox" : checkbox
-    }
-       
-def ScritturaSuProfilazione():    #la posizione dell'utente investitore
+#             "id" : index,
+#             "domanda" : item[0],
+#             "risposta" : item[QUESTCTRL.QUESTIONARIOCTRL().array_risposte_radio]
+#             # "tipo_risposta" : item[QUESTCTRL.QUESTIONARIOCTRL().array_risposte_radio[-1]]
+#         }    
+#         # jsonfile.get("checkbox")[jsonfile.get("checkbox").get("id")] = temp_checkbox
+
+#     jsonfile.keys()[1] = temp_checkbox
+
+#     with open("Questionario.json", "w") as outfile:
+
+#        json.dump(jsonfile, outfile)
+
+# def LetturaQuestionarioDaFile():
+
+#     with open("Questionario.json") as json_file:
+
+#         data = json.load(json_file)
+
+#         GLOBE.DatiQuestionario(data[0], data[1])
+
+
+def ScritturaSuProfilazione(categoria_utente):    #la posizione dell'utente investitore
 
     json_profilazione = {
 
-        "classificazione_rischio" : "speculazione"  #speculazione, risparmio, crescita capitale
+        "classificazione_rischio" : categoria_utente  
 
     }
 
@@ -103,11 +118,16 @@ def ScritturaSuProfilazione():    #la posizione dell'utente investitore
 def LetturaDaProfilazione():  #da utilizzare la profilazione dell'investitore per permettere alcuni investimenti
 
     with open("Profilazione.json") as json_file:
+    
+        try:
+            profilazione_data = json.load(json_file)
 
-        data_lettura = json.load(json_file)
+            GLOBE.profilazione = profilazione_data
+        
+        except JSONDecodeError:
 
-
-    return data_lettura
+            pass
+       
 
 
 

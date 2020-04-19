@@ -11,7 +11,7 @@ class VIEWMANAGER():
 
     win = 0
     tabControl = 0
-
+   
     #Reference alle tabs 
     panoramica = 0
     modificaport = 0
@@ -29,18 +29,18 @@ class VIEWMANAGER():
 
         self.tabControl = ttk.Notebook(self.win)
         
-
+    
         #Add tab PANORAMICA
         self.panoramica = ttk.Frame(self.tabControl)
-        self.tabControl.add(self.panoramica, text = 'Panoramica')
+        self.tabControl.add(self.panoramica, text = 'Panoramica', state = self.DisableTab())
 
         #Add tab MODIFICAPORT
         self.modificaport = ttk.Frame(self.tabControl)
-        self.tabControl.add(self.modificaport, text = 'Modifica/Aggiungi')
+        self.tabControl.add(self.modificaport, text = 'Modifica/Aggiungi', state = self.DisableTab())
 
         #Add tab CONSULENTE
         self.consulente = ttk.Frame(self.tabControl)
-        self.tabControl.add(self.consulente, text = 'Consulente')
+        self.tabControl.add(self.consulente, text = 'Consulente', state = self.DisableTab())
 
         #Add tab QUESTIONARIO
         self.questionario = ttk.Frame(self.tabControl)
@@ -67,3 +67,12 @@ class VIEWMANAGER():
             TAB.Tabella(self.panctrl.frame_port)
             self.panctrl.SetPanoramicaTechValues()
 
+    def DisableTab(self):
+
+        if GLOBE.profilazione == False:
+
+            return "disabled"
+            
+        else:
+
+            return "normal"

@@ -6,6 +6,9 @@ import API_call as CALLAPI
 import Lavoro_file as FILE
 
 titolo = {}    
+questionario = {}
+
+profilazione = False
 
 country_isin = {            #da completare con tutti i riferimenti
         "US" : "united states",
@@ -26,6 +29,8 @@ mappa_periodicita = {
         "Weekly" : "Weekly",
         "Monthly" : "Monthly"
     }
+
+
     
 def AggiungiTitolo(isin, nome, symbol, tipologia_strumento, country, quantita, position, date, price, dataframe_dict):
 
@@ -62,6 +67,20 @@ def MenuTitoliPortafoglioModifica():
         array_titoli.append(item.get("nome"))  #aggiunge un nuovo elemento item all'array
         
     return array_titoli
+
+def DatiQuestionario(dict_questionario, dict_checkbox):
+
+    questionario_dati = {
+
+        "questionario" : dict_questionario,
+        "checkbox" : dict_checkbox
+
+    }
+
+    global questionario
+
+    questionario = questionario_dati
+
 
 
 

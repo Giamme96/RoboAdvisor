@@ -4,6 +4,7 @@ import json
 matplotlib.use('TkAgg')
 import plotly.graph_objects as go
 import pandas as pd
+import statistics as stat
 
 
 from matplotlib import pyplot as plt
@@ -17,6 +18,7 @@ import API_call as CALLAPI
 import globalita as GLOBE
 import Tabella as TAB
 import Metodi_calcolo as CALC
+import Lavoro_file as FILE
 
 
 
@@ -34,14 +36,13 @@ class QUESTIONARIOCTRL():
                                     "Quale è la sua fonte di reddito?",    
                                     "Quanto riesce a risparmiare del suo reddito annuo netto?", 
                                     "Quale percentuale investe dei suoi risparmi in prodotti finanziari?",
-                                    "Quale è la sua reazione ai movimenti negativi di mercato?",
                                 ]
-    lista_domande_questionario_checkbox = [["Livello di istruzione", "1", "2", "3"],
-                                            ["Lei è aggiornato sui mercati finanziari?", "1", "2", "3"],
-                                            ["Con quale frequenza opera sul dossier titoli?", "1", "2", "3"],   
-                                            ["Quale è la sua capacità reddituale annua netta?", "1", "2", "3"], 
-                                            ["Quale è l'obiettivo dei suoi investimenti?", "1", "2", "3"],
-                                            ["Quale è il periodi di tempo per il quale desidera conservare l'investimento?", "1", "2", "3"]
+    lista_domande_questionario_checkbox = [["Livello di istruzione", "Elementare", "Superiore", "Università"],
+                                            ["Lei è aggiornato sui mercati finanziari?", "No", "Si"],  
+                                            ["Come reagisce ai movimenti negativi di mercato?", "Panic selling", "Agisco razionalmente"], 
+                                            ["Quale è l'obiettivo dei suoi investimenti?", "Speculazione", "Crescita capitale", "Risparmio"],
+                                            ["Quale è il periodo di tempo per il quale desidera conservare l'investimento?", "< 12 mesi", "tra 1 e 5 anni", "> 5 anni"],
+                                            ["Se potesse scegliere uno solo tra due pacchi occultati, contenenti 0 euro e 1 euro, e le venissero offerti 50 cent, cosa farebbe?", "Pacco 1", "Pacco 2", "Accetto l'offerta"]
                                         ]
 
     def __init__(self, tabquestionario):
@@ -85,7 +86,10 @@ class QUESTIONARIOCTRL():
                 
                 first = False
                 continue 
-            
+            if i == "positiva" or i == "negativa":
+
+                break
+
             radio = tk.Radiobutton(master, text = i, variable = risposta, value = index_risposte)
             radio.deselect()                         
             radio.grid(column = index_risposte, row = r, sticky = "nswe")
@@ -117,15 +121,52 @@ class QUESTIONARIOCTRL():
     def CallBackQuestionario(self):
 
       
-        risposte_questionario = self.array_risposte_questionario
+        # risposte_questionario = self.array_risposte_questionario
         risposte_radio = self.array_risposte_radio
 
-        for item in risposte_radio:
-            print(item.get())
+        # for item in risposte_radio:
+        #     print(item.get())
         
-        for item in risposte_questionario:
+        # for item in risposte_questionario:
 
-            print(item.get())
+        #     print(item.get())
+
+        punteggio = [] 
+        numero_risposte_per_domanda = []  #numero risposte per ogni domanda
+
+        soglia_bassa = 0.5
+        soglia_media = 0.75
+        # soglia_alta = 1
+
+
+        for i in self.lista_domande_questionario_checkbox:
+            
+            numero_risposte_per_domanda.append(len(i) - 1)
+
+        if len(risposte_radio) == len(numero_risposte_per_domanda):
+
+            for i in range(len(risposte_radio)):
+
+                quoziente = int(risposte_radio[i]) / int(numero_risposte_per_domanda [i])
+                punteggio.append(quoziente)
+
+            media_punteggio = stat.mean(int(punteggio))      #viene assegnato un punteggio al questionario dell'utente per determinare la categoria
+
+            if media_punteggio <= soglia_bassa:
+
+                FILE.ScritturaSuProfilazione("Livello Basso")
+
+            elif media_punteggio >= soglia_media:
+
+                FILE.ScritturaSuProfilazione("Livello Alto")
+
+            else:
+
+                FILE.ScritturaSuProfilazione("Livello Medio")
+
+
+
+
         
 
 

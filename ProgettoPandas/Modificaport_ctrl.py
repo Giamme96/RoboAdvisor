@@ -196,18 +196,28 @@ class MODIFICAPORTCTRL():
 
         tipologia_strumento = self.titolo_agg.get()    
 
+
+        soglia_beta = 1.4
+        soglia_risk_rating = 3
+
         if GLOBE.titolo.get("isin") == None or GLOBE.titolo.get("quantity") == 0:
             
-            if self.quantity_agg.get() > 0:     #controllo quantità inserita maggiore di 0
+            if self.quantity_agg.get() > 0 and GLOBE.country_isin.get(isin[:2]) != None:     #controllo quantità inserita maggiore di 0
 
                 dfp = CALLAPI.BEESCALLER().ApiGetAllByIsinPortafoglio(isin, tipologia_strumento)
+
+                if dfp.get("info_tech").get("Beta") >= soglia_beta or dfp.get("info_tech").get("Risk Rating") >= soglia_risk_rating and GLOBE.profilazione == "Livello Basso": #controllo profilazione
+
+                    msg.showwarning(title = "Informazioni investimento", message = "Il grado di rischio di questo strumento non è adatto al suo portafoglio.")
+
+                    return
 
                 if len(dfp.get("datafetch")) < 60:
 
                     msg.showwarning(title = "Mancanza dati", message = "Le osservazioni non permettono un calcolo del beta adeguato.")
 
                     return
-
+                    
                 GLOBE.AggiungiTitolo(isin, dfp.get("info_gen")["name"].values[0], dfp.get("info_gen")["symbol"].values[0], 
                                         dfp.get("tipo_strumento"), dfp.get("info_gen")["country"].values[0], self.quantity_agg.get(), 
                                         self.position_agg.get(), datetime.now(), dfp.get("datafetch")["Close"].iloc[len(dfp.get("datafetch")) - 1], dfp)
@@ -217,6 +227,11 @@ class MODIFICAPORTCTRL():
                 self.combotitolo_modifica['values'] = GLOBE.MenuTitoliPortafoglioModifica()
 
                 FILE.ScritturaPortafoglioSuFile()
+            else:
+
+                msg.showwarning(title = "Problema inserimento", message = "Controlla di aver inserito correttamente l'isin o la quantità")
+
+                return
                     
     def CallbackModifica(self):            
 
@@ -264,6 +279,12 @@ class MODIFICAPORTCTRL():
         tipo_strumento = self.titolo_cerca.get()    #restituisce il simbolo associato al nome inviato a Lista_NASDQ
 
         isin = self.isin_cerca.get()
+
+        if GLOBE.country_isin.get(isin[:2]) == None:
+
+            msg.showwarning(title = "Problema inserimento", message = "Controlla di aver inserito correttamente l'isin")
+
+            return
 
         df = CALLAPI.BEESCALLER().ApiGetAllByIsin(isin, tipo_strumento, periodizzazione, data_dati)
 

@@ -167,8 +167,6 @@ def RegressioneBetaPortafoglio(y_titolo_datafetch, x_index_datafetch):  #inserir
         
         return 0
 
-    
-
     df_return = DeltaChange(y_titolo_datafetch, "Close")
     dfindex_return = DeltaChange(x_index_datafetch, "Close")
 
