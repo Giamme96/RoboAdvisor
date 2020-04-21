@@ -207,8 +207,16 @@ def GetItemFromInfoTech(dataframe, tipo_strumento, column):   #restituisce la co
 
     return column_item
 
-def MovingAvgCerca(name_symbol, country, tipo_strumento, periodizzazione):   #country e tipo bloccati
-    
-    mav = inv.moving_averages(name = name_symbol,  country = country, product_type = tipo_strumento, interval = periodizzazione)
+def MovingAvgCerca(dataframe, tipo_strumento, periodizzazione):   #country e tipo bloccati
 
-    return mav
+    if tipo_strumento == GLOBE.mappa_strumenti.get("stock"):    #primo parametro simbolo
+        
+        mav = inv.moving_averages(name = dataframe.get("info_gen")["symbol"].values[0], country = dataframe.get("info_gen")["country"].values[0], product_type = tipo_strumento, interval = periodizzazione.lower())
+        print(mav)
+        return mav
+
+    else:
+
+        mav = inv.moving_averages(name = dataframe.get("info_gen")["name"].values[0], country = dataframe.get("info_gen")["country"].values[0], product_type = tipo_strumento, interval = periodizzazione.lower())
+        print(mav)
+        return mav

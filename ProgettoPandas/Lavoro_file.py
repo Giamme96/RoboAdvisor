@@ -20,7 +20,6 @@ def ScritturaPortafoglioSuFile():
             "tipo_strumento" : GLOBE.titolo.get(i).get("tipo_strumento"),
             "country" : GLOBE.titolo.get(i).get("country"),
             "quantity" : GLOBE.titolo.get(i).get("quantity"),
-            "position" : GLOBE.titolo.get(i).get("position"),
             "data_ordine" : datetime.strftime(GLOBE.titolo.get(i).get("data_ordine"), '%Y-%m-%d %H:%M:%S.%f'),
             "price_ordine" : GLOBE.titolo.get(i).get("price_ordine"),
             "totale_ordine" : GLOBE.titolo.get(i).get("totale_ordine"),
@@ -43,72 +42,86 @@ def LetturaPortafoglioDaFile():
 
             for i in data:
             
-                GLOBE.AggiungiTitolo(data.get(i).get("isin"), data.get(i).get("nome"), data.get(i).get("symbol"), data.get(i).get("tipo_strumento"), data.get(i).get("country"), data.get(i).get("quantity"), data.get(i).get("position"), datetime.strptime(data.get(i).get("data_ordine"), '%Y-%m-%d %H:%M:%S.%f'), data.get(i).get("price_ordine"), -1)
+                GLOBE.AggiungiTitolo(data.get(i).get("isin"), data.get(i).get("nome"), data.get(i).get("symbol"), data.get(i).get("tipo_strumento"), data.get(i).get("country"), data.get(i).get("quantity"), datetime.strptime(data.get(i).get("data_ordine"), '%Y-%m-%d %H:%M:%S.%f'), data.get(i).get("price_ordine"), -1)
 
         except JSONDecodeError:
         
             pass
 
-# def ScritturaQuestionarioSuFile():  #scrive su file un nested dict con domande e risposte ricevute dal questionario
+def ScritturaQuestionarioSuFile():  #scrive su file un nested dict con domande e risposte ricevute dal questionario
 
-#     questionario = {}
-#     checkbox = {}
-#     jsonfile = {
-
-#         "questionario" : questionario,
-#         "checkbox" : checkbox
-#     }
-
-#     for item in QUESTCTRL.QUESTIONARIOCTRL().lista_domande_questionario:
-        
-#         index = 0
-
-#         temp_questionario = {
+    jsonfile = {}
+    
+    
+    for item in GLOBE.questionario:
+      
+        temp_questionario = {
             
-#             "id" : index,
-#             "domanda" : item,
-#             "risposta" : QUESTCTRL.QUESTIONARIOCTRL().array_risposte_questionario[index]
-#         }
+            "id" : item,
+            "domanda" : GLOBE.questionario.get(item).get("domanda"),
+            "risposta" : GLOBE.questionario.get(item).get("risposta")
+        }
 
-#         # jsonfile.get("questionario")[QUESTCTRL.QUESTIONARIOCTRL().lista_domande_questionario[index]] = temp_questionario
-#         # jsonfile.get("questionario")[jsonfile.get("questionario").get("id")] = temp_questionario
+        jsonfile[item] = temp_questionario
 
-#     jsonfile.keys()[0] = temp_questionario
 
-#     for item in QUESTCTRL.QUESTIONARIOCTRL().lista_domande_questionario_checkbox:
+    with open("Questionario.json", "w") as outfile:
 
-#         index = 0
+        json.dump(jsonfile, outfile)
 
-#         temp_checkbox = {
+def ScritturaRadioSuFile():
 
-#             "id" : index,
-#             "domanda" : item[0],
-#             "risposta" : item[QUESTCTRL.QUESTIONARIOCTRL().array_risposte_radio]
-#             # "tipo_risposta" : item[QUESTCTRL.QUESTIONARIOCTRL().array_risposte_radio[-1]]
-#         }    
-#         # jsonfile.get("checkbox")[jsonfile.get("checkbox").get("id")] = temp_checkbox
+    jsonfile = {}
 
-#     jsonfile.keys()[1] = temp_checkbox
+    for item in GLOBE.radio:
 
-#     with open("Questionario.json", "w") as outfile:
+        temp_radio = {
 
-#        json.dump(jsonfile, outfile)
+            "id" : item,
+            "domanda" : GLOBE.radio.get(item).get("domanda"),
+            "risposta" : GLOBE.radio.get(item).get("risposta")
+        }    
 
-# def LetturaQuestionarioDaFile():
+        jsonfile[item] = temp_radio
 
-#     with open("Questionario.json") as json_file:
+    with open("Radio.json", "w") as outfile:
 
-#         data = json.load(json_file)
+       json.dump(jsonfile, outfile)
 
-#         GLOBE.DatiQuestionario(data[0], data[1])
+def LetturaQuestionarioDaFile():
 
+    with open("Questionario.json") as json_file:
+
+        data = json.load(json_file)
+
+        for i in data:
+            
+            GLOBE.questionario[i] = {
+                "id" : data.get(i).get("id"),
+                "domanda" : data.get(i).get("domanda"),
+                "risposta" : data.get(i).get("risposta")
+            }
+        
+
+def LetturaRadioDaFile():
+
+    with open("Radio.json") as json_file:
+
+        data = json.load(json_file)
+
+        for i in data:
+            
+            GLOBE.radio[i] = {
+                "id" : data.get(i).get("id"),
+                "domanda" : data.get(i).get("domanda"),
+                "risposta" : data.get(i).get("risposta")
+            }
 
 def ScritturaSuProfilazione(categoria_utente):    #la posizione dell'utente investitore
 
     json_profilazione = {
 
         "classificazione_rischio" : categoria_utente  
-
     }
 
     with open("Profilazione.json", "w") as outfile:

@@ -44,7 +44,7 @@ class VIEWMANAGER():
 
         #Add tab QUESTIONARIO
         self.questionario = ttk.Frame(self.tabControl)
-        self.tabControl.add(self.questionario, text = 'Questionario')
+        self.tabControl.add(self.questionario, text = 'Questionario', state = self.DisableQuestionario())
 
         self.tabControl.pack(expand = 1, fill = 'both') 
 
@@ -73,6 +73,16 @@ class VIEWMANAGER():
 
             return "disabled"
             
+        else:
+
+            return "normal"
+    
+    def DisableQuestionario(self):
+
+        if GLOBE.profilazione != False:
+
+            return "hidden"
+
         else:
 
             return "normal"

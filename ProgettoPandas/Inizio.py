@@ -31,7 +31,10 @@ viewmanager.win.mainloop()
 
 #TODO aggiornamento dei risultati portafoglio rend dev ecc con cambio tab
 #TODO trovare un modo per restituire il risk rating e il beta tramite lo stesso array
-#TODO guardare ilò problema degli int nel calcolo quoziente
+#TODO guardare il problema degli int nel calcolo quoziente
 #TODO Abbellire i form 
 
 
+#TODO Da guardare la scrittura su fiel delle risposte questionario per l'utilizzo in consulente
+#TODO da fare le funzioni di consulente che consiglino in base alle risposte
+#(beta in base agli obiettivi, numero titoli aggiungere per diversificazione, varietà degli strumenti, esposizioni troppo pesanti su alcuni titoli)

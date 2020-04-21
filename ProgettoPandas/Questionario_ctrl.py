@@ -6,12 +6,12 @@ import plotly.graph_objects as go
 import pandas as pd
 import statistics as stat
 
-
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import ttk
 from pandas import DataFrame
+from tkinter import messagebox as msg
 
 import Plot_factory as PLOT   #Chiamata plotting
 import API_call as CALLAPI
@@ -19,7 +19,7 @@ import globalita as GLOBE
 import Tabella as TAB
 import Metodi_calcolo as CALC
 import Lavoro_file as FILE
-
+import View_manager as MANAGER
 
 
 class QUESTIONARIOCTRL():
@@ -37,12 +37,12 @@ class QUESTIONARIOCTRL():
                                     "Quanto riesce a risparmiare del suo reddito annuo netto?", 
                                     "Quale percentuale investe dei suoi risparmi in prodotti finanziari?",
                                 ]
-    lista_domande_questionario_checkbox = [["Livello di istruzione", "Elementare", "Superiore", "Università"],
+    lista_domande_questionario_radio = [["Livello di istruzione", "Elementare", "Superiore", "Università"],
                                             ["Lei è aggiornato sui mercati finanziari?", "No", "Si"],  
                                             ["Come reagisce ai movimenti negativi di mercato?", "Panic selling", "Agisco razionalmente"], 
                                             ["Quale è l'obiettivo dei suoi investimenti?", "Speculazione", "Crescita capitale", "Risparmio"],
                                             ["Quale è il periodo di tempo per il quale desidera conservare l'investimento?", "< 12 mesi", "tra 1 e 5 anni", "> 5 anni"],
-                                            ["Se potesse scegliere uno solo tra due pacchi occultati, contenenti 0 euro e 1 euro, e le venissero offerti 50 cent, cosa farebbe?", "Pacco 1", "Pacco 2", "Accetto l'offerta"]
+                                            ["Se potesse scegliere uno solo tra due pacchi occultati, contenenti 0 euro e 1 euro, e le venissero offerti 50 cent, cosa farebbe?", "Scelgo un pacco", "Accetto l'offerta"]
                                         ]
 
     def __init__(self, tabquestionario):
@@ -70,7 +70,7 @@ class QUESTIONARIOCTRL():
     def CreaEntryWidget(self, master, r, c):      
 
         stringa = tk.StringVar()    #TODO da controllare 
-        insert_data = tk.Entry(master,  textvariable = stringa)
+        insert_data = tk.Entry(master, textvariable = stringa)
         insert_data.grid(column = c, row = r)
         self.array_risposte_questionario.append(stringa)    
         
@@ -86,10 +86,7 @@ class QUESTIONARIOCTRL():
                 
                 first = False
                 continue 
-            if i == "positiva" or i == "negativa":
-
-                break
-
+           
             radio = tk.Radiobutton(master, text = i, variable = risposta, value = index_risposte)
             radio.deselect()                         
             radio.grid(column = index_risposte, row = r, sticky = "nswe")
@@ -111,7 +108,7 @@ class QUESTIONARIOCTRL():
     def CreaRadio3Risposte(self, frame_master):     #Crea un questionario radio da una lista passata
 
         index = 0
-        for i in self.lista_domande_questionario_checkbox:
+        for i in self.lista_domande_questionario_radio:
             
             self.CreaLabel(frame_master, i[0], index, 0)
             self.CreaRadio(frame_master, i, index)
@@ -120,16 +117,19 @@ class QUESTIONARIOCTRL():
     
     def CallBackQuestionario(self):
 
-      
-        # risposte_questionario = self.array_risposte_questionario
+        risposte_questionario = self.array_risposte_questionario
         risposte_radio = self.array_risposte_radio
 
-        # for item in risposte_radio:
-        #     print(item.get())
-        
-        # for item in risposte_questionario:
+        if len(risposte_radio) != len(self.lista_domande_questionario_radio) and len(risposte_questionario) != len(self.lista_domande_questionario): #controllo risposte a tutte le domande
+            
+            msg.showwarning(title = "Problema inserimento", message = "Controlla di aver risposto a tutte le domande!")
 
-        #     print(item.get())
+            return
+
+        GLOBE.DatiQuestionario(self.lista_domande_questionario, risposte_questionario)
+        GLOBE.DatiRadio(self.lista_domande_questionario_radio, risposte_radio)
+        FILE.ScritturaQuestionarioSuFile()  #scrittura su file questionario
+        FILE.ScritturaRadioSuFile()
 
         punteggio = [] 
         numero_risposte_per_domanda = []  #numero risposte per ogni domanda
@@ -137,20 +137,24 @@ class QUESTIONARIOCTRL():
         soglia_bassa = 0.5
         soglia_media = 0.75
         # soglia_alta = 1
+        
+        index = 0
 
-
-        for i in self.lista_domande_questionario_checkbox:
+        for i in self.lista_domande_questionario_radio:
             
             numero_risposte_per_domanda.append(len(i) - 1)
 
         if len(risposte_radio) == len(numero_risposte_per_domanda):
 
-            for i in range(len(risposte_radio)):
+            for i in risposte_radio:
 
-                quoziente = int(risposte_radio[i]) / int(numero_risposte_per_domanda [i])
+                quoziente = i.get() / numero_risposte_per_domanda[index]      #.get
+
                 punteggio.append(quoziente)
 
-            media_punteggio = stat.mean(int(punteggio))      #viene assegnato un punteggio al questionario dell'utente per determinare la categoria
+                index += 1
+
+            media_punteggio = stat.mean(punteggio)      #viene assegnato un punteggio al questionario dell'utente per determinare la categoria
 
             if media_punteggio <= soglia_bassa:
 
@@ -163,11 +167,8 @@ class QUESTIONARIOCTRL():
             else:
 
                 FILE.ScritturaSuProfilazione("Livello Medio")
-
-
-
-
-        
+            
+            msg.showinfo(title = "Operazione eseguita", message = "Invio effettuato con successo!")
 
 
 

@@ -7,6 +7,7 @@ import Lavoro_file as FILE
 
 titolo = {}    
 questionario = {}
+radio = {}
 
 profilazione = False
 
@@ -32,7 +33,7 @@ mappa_periodicita = {
 
 
     
-def AggiungiTitolo(isin, nome, symbol, tipologia_strumento, country, quantita, position, date, price, dataframe_dict):
+def AggiungiTitolo(isin, nome, symbol, tipologia_strumento, country, quantita, date, price, dataframe_dict):
 
     Titolo_dict = {
 
@@ -42,7 +43,6 @@ def AggiungiTitolo(isin, nome, symbol, tipologia_strumento, country, quantita, p
         "tipo_strumento" : tipologia_strumento,
         "country" : country,
         "quantity" : quantita,
-        "position" : position,
         "beta" : CALC.GetItemFromInfoTech(dataframe_dict, tipologia_strumento, "Beta"),  
         "data_ordine" : date,
         "price_ordine" : price,
@@ -68,19 +68,43 @@ def MenuTitoliPortafoglioModifica():
         
     return array_titoli
 
-def DatiQuestionario(dict_questionario, dict_checkbox):
-
-    questionario_dati = {
-
-        "questionario" : dict_questionario,
-        "checkbox" : dict_checkbox
-
-    }
+def DatiQuestionario(lista_domande_questionario, array_risposte_questionario):
 
     global questionario
 
-    questionario = questionario_dati
+    index = 0
 
+    for item in lista_domande_questionario:
+        
+        temp_questionario = {
+            
+            "id" : index,
+            "domanda" : item,
+            "risposta" : array_risposte_questionario[index].get()
+        }
+
+        questionario[index] = temp_questionario    
+
+        index += 1
+
+
+def DatiRadio(lista_domande_questionario_radio, array_risposte_radio):
+
+    global radio
+
+    index = 0
+
+    for item in lista_domande_questionario_radio:
+
+        temp_radio = {
+
+            "id" : index,
+            "domanda" : item[0],
+            "risposta" : item[array_risposte_radio[index].get()]
+        }    
+
+        radio[index] = temp_radio
+        index += 1
 
 
 
