@@ -32,8 +32,10 @@ class MODIFICAPORTCTRL():
 
     testolabelrend = "Il rendimento medio del titolo è: "
     testolabelstd = "La dev. std è: "
-    testolabelmav = "La media mobile del titolo è: "
+    testolabelmav = "La media mobile del titolo è: \n"
+    testolabelprice = "Il prezzo attuale è: "
 
+    valuelabelprice = ""
     valuelabelrend = ""
     valuelabelstd = ""
     valuelabelmav = ""
@@ -68,7 +70,7 @@ class MODIFICAPORTCTRL():
         self.isin_cerca = tk.StringVar() 
         insert_isin_cerca = ttk.Entry(frame_cerca, textvariable = self.isin_cerca) 
         insert_isin_cerca.grid(column = 0, row = 0, padx = 20)
-        TIP.TOOLTIP(insert_isin_cerca, "Inserisci qui l'isin dello strumento che vuoi cercare")
+        TIP.TOOLTIP(insert_isin_cerca, "Inserisci qui l'isin dello strumento che vuoi cercare. Controlla di non aver inserito spazi vuoti alla fine!")
         
         #Creazione menu a tendina elenco società        #dasostituire nome variabili
         self.titolo_cerca = tk.StringVar()
@@ -101,26 +103,30 @@ class MODIFICAPORTCTRL():
         frame_cerca_tech.grid(column = 1, row = 0, pady = 20, sticky = "nwe")
 
         #display rendimento e std aggiornato ogni callbackcerca
+        self.valuelabelprice = tk.StringVar()
+        self.valuelabelprice.set(self.testolabelprice + "0")
+        self.lblprice = ttk.Label(frame_cerca_tech, textvariable = self.valuelabelprice)
+        self.lblprice.grid(column = 0, row = 0, sticky = "nswe")
+
         self.valuelabelrend = tk.StringVar()
         self.valuelabelrend.set(self.testolabelrend + "0")
         self.lblrend = ttk.Label(frame_cerca_tech, textvariable = self.valuelabelrend)
-        self.lblrend.grid(column = 0, row = 0)
+        self.lblrend.grid(column = 0, row = 1, sticky = "nswe", pady = 10)
 
         self.valuelabelstd = tk.StringVar()
         self.valuelabelstd.set(self.testolabelstd + "0")
         self.lblstd = ttk.Label(frame_cerca_tech, textvariable = self.valuelabelstd)
-        self.lblstd.grid(column = 0, row = 1)
+        self.lblstd.grid(column = 0, row = 2, sticky = "nswe")
         TIP.TOOLTIP(self.lblstd, "La deviazione standard è un indice di rischio del titolo, a parità di rendimento si preferisce una dev.std minore")
 
         self.valuelabelmav = tk.StringVar()
         self.valuelabelmav.set(self.testolabelmav + "0")
         self.label_mav = ttk.Label(frame_cerca_tech, textvariable = self.valuelabelmav)
-        self.label_mav.grid(column = 0, row = 3, sticky = "nwe")
+        self.label_mav.grid(column = 0, row = 3, sticky = "nswe", pady = 10)
         TIP.TOOLTIP(self.label_mav, "La media mobile è un segnale che permette di identificare i momenti in cui entrare nell'investimento. Bisogna sempre tenere conto degli obiettivi a lungo termine dell'investimento da rapportare al segnale opportuno")
 
 
         #Creazione sub_frame destra collegato a cerca:::::::::::::::::::::::::::::::::SUB-CERCA^^^
-
         #Creazione labelframe modulo cerca ---------------------------------------------------------------------------------CERCA^^^
 
         #Creazione labelframe modulo aggiungi ******************************************************************************AGGIUNGI
@@ -133,7 +139,7 @@ class MODIFICAPORTCTRL():
         self.isin_agg = tk.StringVar() 
         insert_isin_agg = ttk.Entry(frame_aggiungi, textvariable = self.isin_agg) 
         insert_isin_agg.grid(column = 0, row = 0, padx = 20)
-        TIP.TOOLTIP(insert_isin_agg, "Inserisci qui l'isin dello strumento che vuoi aggiungere in portafoglio.")
+        TIP.TOOLTIP(insert_isin_agg, "Inserisci qui l'isin dello strumento che vuoi aggiungere in portafoglio. Controlla di non aver inserito spazi vuoti alla fine!")
         
         #Creazione menu a tendina titoli
         self.titolo_agg = tk.StringVar()
@@ -148,20 +154,7 @@ class MODIFICAPORTCTRL():
         insertqt_agg = ttk.Entry(frame_aggiungi, textvariable = self.quantity_agg) # la quantità deve essere un intero e non inferiore a 0
         insertqt_agg.grid(column = 2, row = 0, padx = 20)
         TIP.TOOLTIP(insertqt_agg, "Inserisci la quantità da acquistare.")
-
-        # #Creating radio buttons (SHORT-LONG)
-        # self.position_agg = tk.IntVar()
-
-        # check_longagg = tk.Radiobutton(frame_aggiungi, text = "Long", variable = self.position_agg, value = 0)     #0 = LONG
-        # check_longagg.select()
-        # check_longagg.grid(column = 0, row = 1, sticky = tk.W)
-        # TIP.TOOLTIP(check_longagg, "Modalità di acquisto del contratto")
- 
-        # check_shortagg = tk.Radiobutton(frame_aggiungi, text = "Short", variable = self.position_agg, value = 1)    #1 = SHORT
-        # check_shortagg.deselect()
-        # check_shortagg.grid(column = 1, row = 1, sticky = tk.W)
-        # TIP.TOOLTIP(insertqt_agg, "Inserisci la quantità da acquistare.")
-           
+         
         #adding button inserisci
         query_aggiungi = ttk.Button(frame_aggiungi, text = "Inserisci", command = self.CallBackInserisci)
         query_aggiungi.grid(column = 3, row = 0, padx = 20)
@@ -180,17 +173,6 @@ class MODIFICAPORTCTRL():
         self.combotitolo_modifica.grid(column = 0, row = 0, padx = 20)
         TIP.TOOLTIP(self.combotitolo_modifica, "Seleziona quale strumento vuoi modificare.")
         # combosocieta_modifica.current()
-
-        # #Creating radio buttons (SHORT-LONG)
-        # self.position_modifica = tk.IntVar()
-
-        # check_longmod = tk.Radiobutton(frame_modifica, text = "Long", variable = self.position_modifica, value = 0)     #0 = LONG
-        # check_longmod.select()
-        # check_longmod.grid(column = 0, row = 1, sticky = tk.W)
- 
-        # check_shortmod = tk.Radiobutton(frame_modifica, text = "Short", variable = self.position_modifica, value = 1)    #1 = SHORT
-        # check_shortmod.deselect()
-        # check_shortmod.grid(column = 1, row = 1, sticky = tk.W)
 
         #adding a Textbox entry per le quantità
         self.quantity_modifica = tk.IntVar() # il totale dovrà essere minore del cash disponibile *da vedere*
@@ -221,7 +203,7 @@ class MODIFICAPORTCTRL():
 
                 dfp = CALLAPI.BEESCALLER().ApiGetAllByIsinPortafoglio(isin, tipologia_strumento)
 
-                if dfp.get("info_tech").get("Beta") >= soglia_beta or dfp.get("info_tech").get("Risk Rating") >= soglia_risk_rating and GLOBE.profilazione == "Livello Basso": #controllo profilazione
+                if GLOBE.profilazione == "Livello Basso" and (dfp.get("info_tech").get("Beta") >= soglia_beta or dfp.get("info_tech").get("Risk Rating") >= soglia_risk_rating): #controllo profilazione
 
                     msg.showwarning(title = "Informazioni investimento", message = "Il grado di rischio di questo strumento non è adatto al suo portafoglio.")
 
@@ -271,6 +253,8 @@ class MODIFICAPORTCTRL():
            self.combotitolo_modifica['values'] = GLOBE.MenuTitoliPortafoglioModifica()
            self.combotitolo_modifica.current(0)
 
+           msg.showinfo(title = "Movimentazione eseguita", message = f"Operazione eseguita con successo, hai venduto tutto lo stock!")
+
         elif quantita >= GLOBE.titolo[isin].get("quantity"):
 
             msg.showerror("Errore", "Sono ammesse solo operazioni di vendita")
@@ -279,7 +263,7 @@ class MODIFICAPORTCTRL():
         else:
 
             GLOBE.titolo.get(isin)["quantity"] = quantita
-            msg.showinfo(title = "Moviementazione eseguita", message = f"Operazione eseguita con successo, ora ne possiedi {quantita}")
+            msg.showinfo(title = "Movimentazione eseguita", message = f"Operazione eseguita con successo, ora ne possiedi {quantita}")
             
 
         FILE.ScritturaPortafoglioSuFile()
@@ -304,12 +288,14 @@ class MODIFICAPORTCTRL():
 
         df = CALLAPI.BEESCALLER().ApiGetAllByIsin(isin, tipo_strumento, periodizzazione, data_dati)
 
-        self.valuelabelrend.set(self.testolabelrend + str(CALC.DeltaChangeAvg(df, 'Close')))
-        self.valuelabelstd.set(self.testolabelstd + str(CALC.DeltaChangeStd(df, 'Close')))
-        
+        self.valuelabelprice.set(self.testolabelprice + str(round(df.get("datafetch")["Close"].iloc[-1], 2)))
+        self.valuelabelrend.set(self.testolabelrend + str(round(CALC.DeltaChangeAvg(df, 'Close'), 2)))
+        self.valuelabelstd.set(self.testolabelstd + str(round(CALC.DeltaChangeStd(df, 'Close'), 2)))
+        self.valuelabelmav.set(self.testolabelmav + str(CALC.MovingAvgCerca(df, tipo_strumento, periodizzazione)))
+
         PLOT.PLOTFACTORY().SubPlotLineeBarre(df, 'Close', 10, 5, 5)
 
-        self.valuelabelmav.set(self.testolabelmav + str(CALC.MovingAvgCerca(df, tipo_strumento, periodizzazione)))
+        
         # if tipo_strumento == GLOBE.mappa_strumenti.get("stock"):    #primo parametro simbolo
 
         #     self.valuelabelmav.set(self.testolabelmav + str(CALC.MovingAvgCerca(df.get("info_gen")["symbol"].values[0], df.get("info_gen")["country"].values[0], tipo_strumento, periodizzazione)))

@@ -28,5 +28,3 @@ from tkinter import ttk
 import tkinter.messagebox
 import tkinter as tk
   
-df = CALLAPI.BEESCALLER().ApiGetAllByIsin("IT0001031084", "stock", "Monthly", "01/01/2020")
-print(CALC.MovingAvgCerca(df, "stock", "Monthly"))

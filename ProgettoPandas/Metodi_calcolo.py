@@ -62,20 +62,34 @@ def CalcoloChange(dataframe, prezzo_riferimento_t0):  #restituisce il change dal
 
         change = (tempo1 - prezzo_riferimento_t0) / prezzo_riferimento_t0 * 100  
 
-        return change
+        return round(change, 2)
 
 def TotaleInvestimento():
 
-    key_titolo = list(GLOBE.titolo.keys())
     totale = 0
 
-    for i in range(len(key_titolo)):
+    for i in GLOBE.titolo.values():
 
-        totale_parziale = GLOBE.titolo.get(key_titolo[i]).get("totale_ordine")
+        totale_parziale =i.get("totale_ordine")
 
         totale = totale + totale_parziale
 
     return totale
+
+def TotaleInvestimentoNoFund():
+
+    totale_no_fund = 0
+
+    for i in GLOBE.titolo.values():
+
+        if i.get("tipo_strumento") != "fund":
+
+            totale_parziale = i.get("totale_ordine")
+            
+            totale_no_fund = totale_no_fund + totale_parziale
+            # print("Totale è: ", totale_no_fund)
+
+    return totale_no_fund
 
 def CreaMatriceCov():      #array di tipo lista, portafoglio[aapl, aal, msft, ecc]
 
@@ -83,6 +97,21 @@ def CreaMatriceCov():      #array di tipo lista, portafoglio[aapl, aal, msft, ec
     for i in GLOBE.titolo.values():
         
         lista_portafoglio_dropped.append(DeltaChange(i.get("dataframe"), "Close"))
+
+    matrice_cov = np.cov(lista_portafoglio_dropped)
+    # print("La matrice covarianza del portafoglio: ", matrice_cov)
+    # print("shape matrice: ", np.shape(matrice_cov))
+
+    return matrice_cov
+
+def CreaMatriceCovNoFund():      #array di tipo lista, portafoglio[aapl, aal, msft, ecc]
+
+    lista_portafoglio_dropped = []
+    for i in GLOBE.titolo.values():
+        
+        if i.get("tipo_strumento") != "fund":
+
+            lista_portafoglio_dropped.append(DeltaChange(i.get("dataframe"), "Close"))
 
     matrice_cov = np.cov(lista_portafoglio_dropped)
     # print("La matrice covarianza del portafoglio: ", matrice_cov)
@@ -111,6 +140,21 @@ def VettorePesi():
     # print("Il vettore pesi è: ", vettore_pesi)
 
     return vettore_pesi
+
+def VettorePesiNoFund():
+    
+    totale_investimento_no_fund = TotaleInvestimentoNoFund()
+    vettore_pesi_no_fund = []
+    for i in GLOBE.titolo.values():
+
+        if i.get("tipo_strumento") != "fund":
+
+            peso_titolo = i.get("totale_ordine") / totale_investimento_no_fund
+            vettore_pesi_no_fund.append(peso_titolo)
+
+    # print("Il vettore pesi è: ", vettore_pesi_no_fund)
+
+    return vettore_pesi_no_fund
 
 def MatriceProdotto(matriceA, matriceB):
 
@@ -150,37 +194,44 @@ def RendimentoAttesoPortafoglio():
 
 def BetaPortafoglio():
 
-    pesi = np.array(VettorePesi())
+    if not GLOBE.titolo:
+        
+        return 0
+
+    pesi = np.array(VettorePesiNoFund())
 
     lista_portafoglio_beta = []
     for i in GLOBE.titolo.values():
-        
-        lista_portafoglio_beta.append(i.get("beta"))
+
+        if i.get("tipo_strumento") != "fund":
+            
+            lista_portafoglio_beta.append(i.get("beta"))
+            
 
     beta_portafoglio = MatriceProdotto(pesi, TrasponiMatrice(np.array(lista_portafoglio_beta)))
 
     return beta_portafoglio
 
-def RegressioneBetaPortafoglio(y_titolo_datafetch, x_index_datafetch):  #inserire i datafetch raw
+# def RegressioneBetaPortafoglio(y_titolo_datafetch, x_index_datafetch):  #inserire i datafetch raw
 
-    if isinstance(y_titolo_datafetch, int):    
+#     if isinstance(y_titolo_datafetch, int):    
         
-        return 0
+#         return 0
 
-    df_return = DeltaChange(y_titolo_datafetch, "Close")
-    dfindex_return = DeltaChange(x_index_datafetch, "Close")
+#     df_return = DeltaChange(y_titolo_datafetch, "Close")
+#     dfindex_return = DeltaChange(x_index_datafetch, "Close")
 
-    X = dfindex_return
-    X = sm.add_constant(X)
+#     X = dfindex_return
+#     X = sm.add_constant(X)
 
-    Y = df_return
-    model = sm.OLS(Y, X).fit()
-    # prediction = model.predict(X)
-    # print_model = model.summary()
-    # print(print_model)
-    coeff = model.params
+#     Y = df_return
+#     model = sm.OLS(Y, X).fit()
+#     # prediction = model.predict(X)
+#     # print_model = model.summary()
+#     # print(print_model)
+#     coeff = model.params
 
-    return coeff[1] #ritorna il beta
+#     return coeff[1] #ritorna il beta
 
 def GetCurrencyFromInfoGen(dataframe):   #restituisce la curency dell'datafetch inserito
 
@@ -212,11 +263,21 @@ def MovingAvgCerca(dataframe, tipo_strumento, periodizzazione):   #country e tip
     if tipo_strumento == GLOBE.mappa_strumenti.get("stock"):    #primo parametro simbolo
         
         mav = inv.moving_averages(name = dataframe.get("info_gen")["symbol"].values[0], country = dataframe.get("info_gen")["country"].values[0], product_type = tipo_strumento, interval = periodizzazione.lower())
-        print(mav)
         return mav
 
     else:
 
         mav = inv.moving_averages(name = dataframe.get("info_gen")["name"].values[0], country = dataframe.get("info_gen")["country"].values[0], product_type = tipo_strumento, interval = periodizzazione.lower())
-        print(mav)
         return mav
+
+def RoundCalcolo(variabile, stato):
+
+    if stato == True:
+
+        rounded = round(variabile, 2)
+
+        return rounded
+
+    else:
+
+        return variabile

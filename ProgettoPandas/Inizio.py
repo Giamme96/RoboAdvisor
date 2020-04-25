@@ -9,12 +9,12 @@ from datetime import timedelta
 
 import Plot_factory as PLOT   #Chiamata plotting
 import View_manager as MANAGER
-
 import globalita as GLOBE
 import API_call as CALLAPI
 import Lavoro_file as FILE
 
 FILE.LetturaDaProfilazione()
+FILE.LetturaRadioDaFile()
 FILE.LetturaPortafoglioDaFile()
 
 CALLAPI.BEESCALLER().ChiamataApiPortafoglioPanoramica()
@@ -24,17 +24,13 @@ viewmanager = MANAGER.VIEWMANAGER()
 
 
 
-viewmanager.win.update()
+# viewmanager.win.update()
 viewmanager.win.deiconify()
-viewmanager.win.mainloop()         
+viewmanager.win.mainloop()        
+
+
+
 
 
 #TODO aggiornamento dei risultati portafoglio rend dev ecc con cambio tab
 #TODO trovare un modo per restituire il risk rating e il beta tramite lo stesso array
-#TODO guardare il problema degli int nel calcolo quoziente
-#TODO Abbellire i form 
-
-
-#TODO Da guardare la scrittura su fiel delle risposte questionario per l'utilizzo in consulente
-#TODO da fare le funzioni di consulente che consiglino in base alle risposte
-#(beta in base agli obiettivi, numero titoli aggiungere per diversificazione, varietà degli strumenti, esposizioni troppo pesanti su alcuni titoli)

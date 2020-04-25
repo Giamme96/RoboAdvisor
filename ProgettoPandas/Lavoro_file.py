@@ -92,30 +92,37 @@ def LetturaQuestionarioDaFile():
 
     with open("Questionario.json") as json_file:
 
-        data = json.load(json_file)
+        try:
+            data = json.load(json_file)
 
-        for i in data:
-            
-            GLOBE.questionario[i] = {
-                "id" : data.get(i).get("id"),
-                "domanda" : data.get(i).get("domanda"),
-                "risposta" : data.get(i).get("risposta")
-            }
+            for i in data:
+                
+                GLOBE.questionario[i] = {
+                    "id" : data.get(i).get("id"),
+                    "domanda" : data.get(i).get("domanda"),
+                    "risposta" : data.get(i).get("risposta")
+                }
+        except JSONDecodeError:
+    
+            pass
         
-
 def LetturaRadioDaFile():
 
     with open("Radio.json") as json_file:
 
-        data = json.load(json_file)
-
-        for i in data:
-            
-            GLOBE.radio[i] = {
-                "id" : data.get(i).get("id"),
-                "domanda" : data.get(i).get("domanda"),
-                "risposta" : data.get(i).get("risposta")
-            }
+        try:
+            data = json.load(json_file)
+    
+            for i in data:
+                
+                GLOBE.radio[i] = {
+                    "id" : data.get(i).get("id"),
+                    "domanda" : data.get(i).get("domanda"),
+                    "risposta" : data.get(i).get("risposta")
+                }
+        except JSONDecodeError:
+        
+            pass
 
 def ScritturaSuProfilazione(categoria_utente):    #la posizione dell'utente investitore
 

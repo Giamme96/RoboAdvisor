@@ -289,7 +289,7 @@ def Tabella(master):
     righe = len(list(GLOBE.titolo.keys()))
    
     colonne = len(list(GLOBE.titolo.get(list(GLOBE.titolo.keys())[0]).keys())) - 1
-    tabella = Sheet(master, data = [[f"Row {r}, Column {c}" for c in range(colonne)] for r in range(righe)], height = righe * 55, width = colonne * 130)
+    tabella = Sheet(master, data = [[f"Row {r}, Column {c}" for c in range(colonne)] for r in range(righe)], height = 400, width = 1550)
 
         
     tabella.headers((f"Header{c}" for c in range(colonne)))
@@ -301,6 +301,8 @@ def Tabella(master):
     for i in header:        #mi crea gli header della tabella
 
         tabella.headers(i.capitalize(), index)
+        # tabella.column_width(column = index, width = 150)
+
         index = index + 1
 
         if index == colonne:
@@ -311,6 +313,7 @@ def Tabella(master):
         for k in range(len(header) - 1):
 
             tabella.set_cell_data(j, k, value = GLOBE.titolo.get(key_titolo[j]).get(header[k]))
-    
+
+    tabella.set_all_cell_sizes_to_text()
     tabella.grid(row = 0, column = 0, sticky = "nswe")
 

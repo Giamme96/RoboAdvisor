@@ -22,17 +22,55 @@ class CONSULENTECTRL():
 
     consulente = 0
 
+    testo_beta_1 = "Il beta del tuo portafoglio è : "
+    testo_beta_2 = ", considera che questo agisce come moltiplicatore dei movimenti di mercato. \n"
+    testo_esposizione = "Un portafoglio ben strutturato non deve avere esposizioni troppo elevate ad un singolo titolo. \nDovresti ridurre l'esposizione verso questi titoli, modificando le quantità o aumentando l'investimento totale: "
+    testo_diversificazione = "Un portafoglio ben diversificato permette una grossa riduzione del rischio. \n"
+
+    value_beta = 0
+    value_esposizione = 0
+    value_diversificazione = 0
+
+
+
+
     def __init__(self, tabconsulente):
 
         self.consulente = tabconsulente
 
-        frame_consulente = ttk.LabelFrame(self.consulente, text = "Overview consulente, consigli utili...")
-        frame_consulente.grid(column = 0, row = 0, sticky = "nswe")
+        self.value_beta = tk.StringVar()
+        self.value_esposizione = tk.StringVar()
+        self.value_diversificazione = tk.StringVar()
 
-        # label_beta = ttk.Label(frame_consulente, text = f"Il beta del tuo portafoglio è : {CALC.BetaPortafoglio}, considera che questo agisce come moltiplicatore dei movimenti di mercato. ")
-        # label_totale_investimento.grid(column = 0, row = 0, sticky = "nswe")
+        self.SetConsulenteValues()
+
+        labelframe_beta = ttk.LabelFrame(self.consulente, text = "BETA PORTAFOGLIO")
+        labelframe_beta.grid(column = 0, row = 0, sticky = "nswe")
+        label_beta = ttk.Label(labelframe_beta, textvariable = self.value_beta)
+        label_beta.grid(column = 0, row = 0, sticky = "nswe")
+
+        labelframe_diversificazione = ttk.LabelFrame(self.consulente, text = "DIVERSIFICAZIONE PORTAFOGLIO")
+        labelframe_diversificazione.grid(column = 0, row = 1, sticky = "nswe", pady = 20)
+        label_diversificazione = ttk.Label(labelframe_diversificazione, textvariable = self.value_diversificazione)
+        label_diversificazione.grid(column = 0, row = 0, sticky = "nswe")
+
+        labelframe_esposizione = ttk.LabelFrame(self.consulente, text = "ESPOSIZIONE TITOLI")
+        labelframe_esposizione.grid(column = 0, row = 2, sticky = "nswe")
+        label_esposizione = ttk.Label(labelframe_esposizione, textvariable = self.value_esposizione)
+        label_esposizione.grid(column = 0, row = 0, sticky = "nswe")
+
+    def SetConsulenteValues(self):
+
+        self.value_beta.set(self.testo_beta_1 + str(round(CALC.BetaPortafoglio(), 2)) + self.testo_beta_2 + str(self.ConsiglioBeta()))
+        self.value_diversificazione.set(self.testo_diversificazione + str(self.ConsiglioDiversificazione()))
+        self.value_esposizione.set(self.testo_esposizione + str(self.ConsiglioEsposizione()))
+
 
     def ConsiglioDiversificazione(self):
+
+        if not GLOBE.titolo:
+            
+            return 
 
         soglia_titoli = 20
 
@@ -41,6 +79,53 @@ class CONSULENTECTRL():
             consiglio = "Ti consiglio vivamente di aumentare i titoli nel tuo portafoglio per una migliore diversificazione."
         
         return consiglio
-
+    
+    def ConsiglioBeta(self):
         
+        if not GLOBE.titolo:
+
+            return 
+        
+        if not GLOBE.radio:
+
+            return
+        
+        if GLOBE.radio != None:
+       
+            if GLOBE.radio["3"].get("risposta"):
+
+                consiglio = "Ti consiglio di inserire titoli con un rischio non troppo elevato."
+            
+                return consiglio
+
+            elif GLOBE.radio["3"].get("risposta") == "Speculazione":
+
+                consiglio = "Ti consiglio di inserire anche titoli con un Beta alto, per aumentare le possibilità di alti profitti."
+
+                return consiglio        
+    
+    def ConsiglioEsposizione(self):
+
+        if not GLOBE.titolo:
+            
+            return
+                    
+        soglia = 0.20
+        titoli_over = []
+        totale = CALC.TotaleInvestimento()
+        for i in GLOBE.titolo.values():
+
+            if (i.get("totale_ordine") / totale) >= soglia:
+
+                titoli_over.append(i.get("symbol"))
+        
+        return titoli_over
+
+
+              
+      
+
+
+
+                
 

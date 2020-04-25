@@ -89,7 +89,7 @@ class QUESTIONARIOCTRL():
            
             radio = tk.Radiobutton(master, text = i, variable = risposta, value = index_risposte)
             radio.deselect()                         
-            radio.grid(column = index_risposte, row = r, sticky = "nswe")
+            radio.grid(column = index_risposte, row = r, sticky = "w")
             
             index_risposte += 1
 
@@ -169,6 +169,7 @@ class QUESTIONARIOCTRL():
                 FILE.ScritturaSuProfilazione("Livello Medio")
             
             msg.showinfo(title = "Operazione eseguita", message = "Invio effettuato con successo!")
+
 
 
 

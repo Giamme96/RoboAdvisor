@@ -94,13 +94,7 @@ class BEESCALLER():
             }    
 
         return all_info_portafoglio
-    
-    # def ApiCallInfoStock(self, symbol): #restituisce le info della società
-
-    #     info_stock = inv.stocks.get_stock_information(stock = symbol, country = "united states")
-
-    #     return info_stock
-        
+            
     def ChiamataApiPortafoglioPanoramica(self): 
 
         # index_call = self.ApiIndexCallPortafoglio("nasdaq")  #chiamata all'indice per il calcolo del Beta
@@ -114,7 +108,6 @@ class BEESCALLER():
                 GLOBE.titolo.get(i).update(dataframe = dataframe_dict)
                 GLOBE.titolo.get(i).update(change_dall_acquisto = CALC.CalcoloChange(GLOBE.titolo.get(i).get("dataframe"), GLOBE.titolo.get(i).get("price_ordine")))
                 GLOBE.titolo.get(i).update(beta = CALC.GetItemFromInfoTech(dataframe_dict, GLOBE.titolo.get(i).get("tipo_strumento"), "Beta"))
-                # dataframe_dict.get("info_tech")["Beta"].values[0])
                 GLOBE.titolo.get(i).update(one_year_change = dataframe_dict.get("info_tech")["1-Year Change"].values[0])
                 GLOBE.titolo.get(i).update(currency = dataframe_dict.get("info_gen")["currency"].values[0])
                 print(f"Aggiorno il dict titolo.")

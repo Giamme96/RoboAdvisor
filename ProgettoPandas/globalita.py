@@ -42,11 +42,11 @@ def AggiungiTitolo(isin, nome, symbol, tipologia_strumento, country, quantita, d
         "symbol" : symbol,
         "tipo_strumento" : tipologia_strumento,
         "country" : country,
-        "quantity" : quantita,
-        "beta" : CALC.GetItemFromInfoTech(dataframe_dict, tipologia_strumento, "Beta"),  
         "data_ordine" : date,
+        "beta" : CALC.GetItemFromInfoTech(dataframe_dict, tipologia_strumento, "Beta"), 
         "price_ordine" : price,
-        "totale_ordine" : price * quantita,
+        "quantity" : quantita,
+        "totale_ordine" : CALC.RoundCalcolo(price * quantita, True),
         "change_dall_acquisto" : CALC.CalcoloChange(dataframe_dict, price),
         "one_year_change" : CALC.GetItemFromInfoTech(dataframe_dict, tipologia_strumento, "1-Year Change"),
         "currency" : CALC.GetCurrencyFromInfoGen(dataframe_dict),
@@ -86,7 +86,6 @@ def DatiQuestionario(lista_domande_questionario, array_risposte_questionario):
         questionario[index] = temp_questionario    
 
         index += 1
-
 
 def DatiRadio(lista_domande_questionario_radio, array_risposte_radio):
 
