@@ -17,6 +17,7 @@ Assumptions
  * Available countries are (US-IT-GB), described in a dictionary in *globalita.py*, just add the country you are looking for.
  * Surely there are exploits in the platform, especially in tab Modifica.
  * Not the best looking platform, but in Italy we say "Brutto ma buono", by the way i'm not sure at all my code is "buono".
+ * Funds have risk rating instead of Beta, but are displayed in the same column, just pay attention.
 
 First steps
  * Start to fill out the survey, it's a form representig MIFID II, the main pourpouses is the user profiling. (**restart application**)
@@ -57,3 +58,7 @@ Ringraziamenti
 * Un rigraziamento particolare ad Alvaro Barolome (alvarob96@usal.es), ha creato le API senza limitazioni da INVESTING, a quanto pare nessuno c'aveva pensato, dall'email deduco abbia la mia stessa età, chapeau. Magari utilizzare l'ISIN direttamente come chiave sarebbe stata la mossa del secolo, invece che paese, lingua e nome, ma c'è sempre tempo per migliorare. https://pypi.org/project/investpy/
 * A mio fratello, paziente nello spiegarmi i dictionary e le classi, un abbraccio.
 
+
+![Questionario](/Questionario.png)
+![Cerca](/Cerca.png)
+![panoramica](/Panoramica.png)
