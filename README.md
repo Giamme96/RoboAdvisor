@@ -1,18 +1,18 @@
 # Progetto-Fintech
 
-Librerie-----------
+*Librerie-----------
 
--Installando il package Scipy vengono installate molte di quelle necessarie qui sotto.
+  *Installando il package Scipy vengono installate molte di quelle necessarie qui sotto.
 
--Librerie necessarie(dovrebbero essere tutte): tkinter, datetime, matplotlib, pandas, statistics, plotly.graph_objects, numpy, statsmodels.api, investpy, tksheet.
+  *Librerie necessarie(dovrebbero essere tutte): tkinter, datetime, matplotlib, pandas, statistics, plotly.graph_objects, numpy, statsmodels.api, investpy, tksheet.
 
-Generale-----------
+*Generale-----------
 
--File principale per lo start dell'applicazione è Inizio.py.
+  *File principale per lo start dell'applicazione è Inizio.py.
 
--I file in JSON sono file su cui vengono scritti i dati in caso di chiusura dell'applicazione.
+  *I file in JSON sono file su cui vengono scritti i dati in caso di chiusura dell'applicazione.
 
--Il manager non viene aggiornato quando vi sono cambiamenti nel programma che abilitano le tabs. Dopo l'invio del questionario sarà necessario il riavvio del programma, sarà necessario anche dopo l'inserimento del primo titolo in portafoglio per la tab CONSULENTE (ho preferito far si che queste tab vengano disattivate malgrado il riavvio necessario).
+  *Il manager non viene aggiornato quando vi sono cambiamenti nel programma che abilitano le tabs. Dopo l'invio del questionario sarà necessario il riavvio del programma, sarà necessario anche dopo l'inserimento del primo titolo in portafoglio per la tab CONSULENTE (ho preferito far si che queste tab vengano disattivate malgrado il riavvio necessario).
 
 Assunzioni-----------
 
@@ -56,3 +56,4 @@ Ringraziamenti-----------
 -Un rigraziamento particolare ad Alvaro Barolome (alvarob96@usal.es), ha creato le API senza limitazioni da INVESTING, a quanto pare nessuno c'aveva pensato, dall'email deduco abbia la mia stessa età, chapeau. Magari utilizzare l'ISIN direttamente come chiave sarebbe stata la mossa del secolo, invece che paese, lingua e nome, ma c'è sempre tempo per migliorare. https://pypi.org/project/investpy/
 
 -A mio fratello, paziente nello spiegarmi i dictionary e le classi, un abbraccio.
+
