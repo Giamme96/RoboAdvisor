@@ -1,5 +1,5 @@
 # Progetto-Fintech
-**ENG VERSION SCROLL DOWN FOR IMGS** 
+**ENG VERSION SCROLL DOWN FOR IMGS** -----------------
 
 Libraries
  * Installing Scipy package worth a lot of necessary libraries below there.
@@ -23,7 +23,7 @@ First steps
  * Start to fill out the survey, it's a form representig MIFID II, the main pourpouses is the user profiling. (**restart application**)
  * Now you could looking for financial assets, as you add one in portfolio i recommend to **restart application**.
   
-**ITA VERSION IMMAGINI IN FONDO**
+**ITA VERSION IMMAGINI IN FONDO** -----------------
 
 Librerie
  * Installando il package Scipy vengono installate molte di quelle necessarie qui sotto.
