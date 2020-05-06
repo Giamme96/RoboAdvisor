@@ -39,4 +39,3 @@ Ringraziamenti-----------
 -Per la tabella, a quanto pare gli sviluppatori di tkinter non c'hanno ancora pensato. https://github.com/ragardner/tksheet
 -Un rigraziamento particolare ad Alvaro Barolome (alvarob96@usal.es), ha creato le API senza limitazioni da INVESTING, a quanto pare nessuno c'aveva pensato, dall'email deduco abbia la mia stessa età, chapeau. Magari utilizzare l'ISIN direttamente come chiave sarebbe stata la mossa del secolo, invece che paese, lingua e nome, ma c'è sempre tempo per migliorare. https://pypi.org/project/investpy/
 -A mio fratello, paziente nello spiegarmi i dictionary e le classi, un abbraccio.
-
