@@ -21,7 +21,8 @@ class BEESCALLER():
 
         endus = datetime.now()
         endeu = endus.strftime("%d/%m/%Y")
-        
+        # print(inv.stocks.get_stock_countries())        
+
         if tipologia_strumento == GLOBE.mappa_strumenti.get("stock"):
 
             stock = inv.stocks.get_stocks(country = country)

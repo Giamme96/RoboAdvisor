@@ -5,7 +5,7 @@ matplotlib.use('TkAgg')
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import Plot_factory as PLOT   #Chiamata plotting
+
 import json
 from datetime import datetime
 from pandas import DataFrame
@@ -17,7 +17,7 @@ import Plot_factory as PLOT
 import Metodi_calcolo as CALC
 import Lavoro_file as FILE
 import Tooltip as TIP
-
+import Plot_factory as PLOT   #Chiamata plotting
 class MODIFICAPORTCTRL():
 
     #Reference TAB

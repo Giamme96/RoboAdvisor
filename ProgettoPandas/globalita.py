@@ -14,7 +14,10 @@ profilazione = False
 country_isin = {            #da completare con tutti i riferimenti
         "US" : "united states",
         "IT" : "italy",
-        "GB" : "great britain"
+        "GB" : "great britain",
+        "NL" : "netherlands",
+        "FR" : "france",
+        "IE" : "ireland"
     }
 
 mappa_strumenti = {

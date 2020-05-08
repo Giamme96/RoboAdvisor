@@ -102,6 +102,9 @@ def CreaMatriceCov():      #array di tipo lista, portafoglio[aapl, aal, msft, ec
     # print("La matrice covarianza del portafoglio: ", matrice_cov)
     # print("shape matrice: ", np.shape(matrice_cov))
 
+    # matrice_corr = np.corrcoef(lista_portafoglio_dropped) #matrice correlazioni
+    # print(matrice_corr)
+
     return matrice_cov
 
 def CreaMatriceCovNoFund():      #array di tipo lista, portafoglio[aapl, aal, msft, ecc]
