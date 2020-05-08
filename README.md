@@ -10,11 +10,12 @@ General
  * In JSON files there are all data stored by the application, no DB needed, it's my choice, i don't remember SQL and so on.
  * I have a problem with the update and mainloop function from tkinter, so just restart application after sending the survey as a first step (tabs Panoramica, Modifica and Consulente **disabled**), and after adding a title in the portfolio (**enabling** tab Consulente).
  * Obviously the advices are not for Warren Buffet, but a newbie in finance could keeps them in mind.
+ * Problems with *ISINtoCountry* when legal head office differs from country retrieved by the function.
  
 Assumptions
  * There is only one instance for every title in portfolio, so there is only one timestap for every title.
  * 3 available assets (Stock-Etf-Fund), it takes very few changes to add others from API (https://investpy.readthedocs.io/index.html).
- * Available countries are (US-IT-GB), described in a dictionary in *globalita.py*, just add the country you are looking for.
+ * Available countries are (US-IT-GB-NL-FR-IE), described in a dictionary in *globalita.py*, just add the country you are looking for.
  * Surely there are exploits in the platform, especially in tab Modifica.
  * Not the best looking platform, but in Italy we say "Brutto ma buono", by the way i'm not sure at all my code is "buono".
  * Funds have risk rating instead of Beta, but are displayed in the same column, just pay attention.
@@ -37,7 +38,7 @@ Generale
 Assunzioni
 * E' possibile avere una sola istanza per ogni strumento nel portafoglio, quindi una sola data di acquuisto.
 * Gli strumenti acquistabili/cercabili sono Stock-Etf-Funds (è possibile inserire altri strumenti con 3-4 righe di codice e piccole        modifiche in generale, dipende anche dalle API).
-* E' possibile cercare/acquistare gli strumenti solo in determinati paesi (US-IT-GB, modificabili nel dictionary countries)
+* E' possibile cercare/acquistare gli strumenti solo in determinati paesi (US-IT-GB-NL-FR-IE, modificabili nel dictionary countries)
 * E' probabile che vi siano exploit nell'inserimento di valori/stringhe nei form, ci sono molti controlli in ogni caso.
 * Ovviamente non è stata presa in considerazione la sicurezza dei dati o il login dell'utente.
 
